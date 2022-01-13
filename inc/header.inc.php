@@ -20,15 +20,24 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="index.php">Menu</a>
         </li>
-        <li>
+     <li>
         <a class="nav-link" href="voiture.php">Voiture</a>
      </li>
+
      <li class="nav-item">
-        <a class="nav-link" href="inscription.php">Inscription</a>
-    </li>
-    <li class="nav-item">
-     <a class="nav-link " href="connexion.php">Connexion</a>
-    </li>
+     <?php
+     if(user_is_connected()){
+        echo '<a class="nav-link" href="connexion.php?action=deconnexion">Deconnexion</a>';
+     } else {
+         echo '
+            <a class="nav-link" href="inscription.php">Inscription</a>
+        </li>
+        <li class="nav-item">
+             <a class="nav-link " href="connexion.php">Connexion</a>
+         ';
+     }
+     ?>
+     </li>
       </ul>
     </div>
   </div>

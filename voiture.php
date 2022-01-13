@@ -1,4 +1,8 @@
 <?php
+include "inc/init.inc.php";
+include "inc/function.inc.php";
+
+
 // COPIE COLLE LE CONTENU DU FICHIER ENTRE GUILLEMET ET L'INTEGRE A LA PAGE
 include_once "inc/header.inc.php";
 ?>

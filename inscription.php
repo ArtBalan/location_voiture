@@ -1,6 +1,7 @@
 <?php
 
 include "inc/init.inc.php";
+include "inc/function.inc.php";
 
 include_once "inc/header.inc.php";
 
@@ -79,9 +80,9 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
   }
 
   // Verif cp
-  if(iconv_strlen($cp) < 1 || iconv_strlen($cp) >= 5  ){
+  if(iconv_strlen($cp) < 1 || iconv_strlen($cp) > 5  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠, Le code postal doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, Le code postal doit avoir entre 1 et 5 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
 
   // Verif adresse

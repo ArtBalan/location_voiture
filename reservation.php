@@ -1,4 +1,8 @@
 <?php
+
+include "inc/init.inc.php";
+include "inc/function.inc.php";
+
 include_once "inc/header.inc.php";
 ?>
 
