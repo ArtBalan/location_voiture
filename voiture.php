@@ -5,7 +5,7 @@ include_once "inc/header.inc.php";
 
 <div class="card-group">
   <div class="card">
-    <img src="mercedes-gla.jpg" class="card-img-top" alt="...">
+    <img src="img/mercedes-gla.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Mercedes GLA AMG </h5>
       <p class="card-text">Mercedes GLA AMG
@@ -22,7 +22,7 @@ include_once "inc/header.inc.php";
     </div>
   </div>
   <div class="card">
-    <img src="mercedes-gla.jpg" class="card-img-top" alt="...">
+    <img src="img/mercedes-gla.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Mercedes GLA </h5>
       <p class="card-text">Mercedes GLA 
@@ -39,7 +39,7 @@ include_once "inc/header.inc.php";
     </div>
   </div>
   <div class="card">
-    <img src="mercedes-amg.jpg" class="card-img-top" alt="..." width: 50px;
+    <img src="img/mercedes-amg.jpg" class="card-img-top" alt="..." width: 50px;
 	height: 50px;>
     <div class="card-body">
       <h5 class="card-title">Mercedes Classe A AMG </h5>
@@ -61,7 +61,7 @@ include_once "inc/header.inc.php";
 
 <div class="card-group">
   <div class="card">
-    <img src="audi-a3.jpg" class="card-img-top" alt="audi a3">
+    <img src="img/audi-a3.jpg" class="card-img-top" alt="audi a3">
     <div class="card-body">
       <h5 class="card-title">Audi A3 SportBack</h5>
       <p class="card-text">Audi A3 SportBack 2019 Black Eddtion. 
@@ -78,7 +78,7 @@ include_once "inc/header.inc.php";
     </div>
   </div>
   <div class="card">
-    <img src="audi-rsq3.jpg" class="card-img-top" alt="...">
+    <img src="img/audi-rsq3.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Audi RSQ3</h5>
       <p class="card-text">Audi RSQ3 2020
@@ -95,7 +95,7 @@ include_once "inc/header.inc.php";
     </div>
   </div>
   <div class="card">
-    <img src="audi.jpg" class="card-img-top" alt="...">
+    <img src="img/audi.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Audi e-tron</h5>
       <p class="card-text">Audi e-tron 2020
@@ -116,7 +116,7 @@ include_once "inc/header.inc.php";
 
 <div class="card-group">
   <div class="card">
-    <img src="porsche-911.jpg" class="card-img-top" alt="...">
+    <img src="img/porsche-911.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Porshe 911</h5>
       <p class="card-text">Porsche  911 turbo
@@ -133,7 +133,7 @@ include_once "inc/header.inc.php";
     </div>
   </div>
   <div class="card">
-    <img src="porshe-macan.jpg" class="card-img-top" alt="...">
+    <img src="img/porshe-macan.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Porshe Macon</h5>
       <p class="card-text">Porshe Macan turbo GTS
@@ -150,7 +150,7 @@ include_once "inc/header.inc.php";
     </div>
   </div>
   <div class="card">
-    <img src="porshe_panamera.jpg" class="card-img-top" alt="...">
+    <img src="img/porshe_panamera.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Porshe panamera</h5>
       <p class="card-text">Porshe panamera 
