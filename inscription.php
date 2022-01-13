@@ -31,56 +31,69 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
   // Verif pseudo
   if(iconv_strlen($pseudo) < 1 || iconv_strlen($pseudo) >= 25  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠️, Le pseudo doit avoir entre 1 et 25 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, Le pseudo doit avoir entre 1 et 25 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+  }
+
+  // Verif si le pseudo est déjà pris
+  $requete = $pdo->prepare("SELECT * FROM membre where pseudo = :pseudo");
+  $requete->bindParam("pseudo", $pseudo, PDO::PARAM_STR );
+  $requete->execute();
+  if($requete->rowCount()>0){
+    $erreur = true;
+    $msg .= '<div class="alert alert-danger mb-3">⚠, Le pseudo est déjà pris<br>Veuillez en changer.</div>';
   }
 
   // Verif mdp
   if(iconv_strlen($mdp) < 7 || iconv_strlen($pseudo) >= 50  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠️, Le mot de passe doit avoir entre 7 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, Le mot de passe doit avoir entre 7 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
 
   // Verif nom
   if(iconv_strlen($nom) < 1 || iconv_strlen($nom) >= 50  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠️, Le nom doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, Le nom doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
-
 
   // Verif prenom
   if(iconv_strlen($prenom) < 1 || iconv_strlen($prenom) >= 50  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠️, Le prenom doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, Le prenom doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
 
   // Verif email
   if(iconv_strlen($email) < 1 || iconv_strlen($email) >= 50  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠️, L\'email doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, L\'email doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+  }
+
+  if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+      $erreur=true;
+      $msg .= '<div class="alert alert-danger mb-3">⚠, L\'email n\'est pas valide<br>Veuillez vérifier vos saisies.</div>';
   }
 
   // Verif ville
   if(iconv_strlen($ville) < 1 || iconv_strlen($ville) >= 50  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠️, Le nom de la ville doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, Le nom de la ville doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
 
   // Verif cp
   if(iconv_strlen($cp) < 1 || iconv_strlen($cp) >= 5  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠️, Le code postal doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, Le code postal doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
 
   // Verif adresse
   if(iconv_strlen($adresse) < 1 || iconv_strlen($adresse) >= 100  ){
       $erreur=true;
-      $msg .= '<div class="alert alert-danger mb-3">⚠️, Le code postal doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
+      $msg .= '<div class="alert alert-danger mb-3">⚠, Le code postal doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
 
     if($erreur == false){
 
       $enregistrement = $pdo->prepare("INSERT INTO membre(statut, pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse) VALUES(:statut, :pseudo, :mdp, :nom, :prenom, :email, :sexe, :ville, :cp, :adresse)");
-
+      $mdp = password_hash($mdp,PASSWORD_DEFAULT);
       $statut = "0";
       $enregistrement->bindParam("statut", $statut, PDO::PARAM_STR);
       $enregistrement->bindParam("pseudo", $pseudo, PDO::PARAM_STR);
@@ -94,8 +107,6 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
       $enregistrement->bindParam("adresse", $adresse, PDO::PARAM_STR);
       $enregistrement->execute();
   }
-
-
 }
 
 ?>
