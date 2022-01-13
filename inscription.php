@@ -1,4 +1,7 @@
 <?php
+
+include "inc/init.inc.php";
+
 include_once "inc/header.inc.php";
 
 $pseudo = '';
@@ -22,7 +25,8 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
   $cp = trim($_POST['cp']);
   $adresse = trim($_POST['adresse']);
 
-  $error = false;
+  $msg = "";
+  $erreur = false;
 
   // Verif pseudo
   if(iconv_strlen($pseudo) < 1 || iconv_strlen($pseudo) >= 25  ){
@@ -67,12 +71,31 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
       $msg .= '<div class="alert alert-danger mb-3">⚠️, Le code postal doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
 
-
   // Verif adresse
   if(iconv_strlen($adresse) < 1 || iconv_strlen($adresse) >= 100  ){
       $erreur=true;
       $msg .= '<div class="alert alert-danger mb-3">⚠️, Le code postal doit avoir entre 1 et 50 caractères inclus<br>Veuillez vérifier vos saisies.</div>';
   }
+
+    if($erreur == false){
+
+      $enregistrement = $pdo->prepare("INSERT INTO membre(statut, pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse) VALUES(:statut, :pseudo, :mdp, :nom, :prenom, :email, :sexe, :ville, :cp, :adresse)");
+
+      $statut = "0";
+      $enregistrement->bindParam("statut", $statut, PDO::PARAM_STR);
+      $enregistrement->bindParam("pseudo", $pseudo, PDO::PARAM_STR);
+      $enregistrement->bindParam("mdp", $mdp, PDO::PARAM_STR);
+      $enregistrement->bindParam("nom", $nom, PDO::PARAM_STR);
+      $enregistrement->bindParam("prenom", $prenom, PDO::PARAM_STR);
+      $enregistrement->bindParam("email", $email, PDO::PARAM_STR);
+      $enregistrement->bindParam("sexe", $sexe, PDO::PARAM_STR);
+      $enregistrement->bindParam("ville", $ville, PDO::PARAM_STR);
+      $enregistrement->bindParam("cp", $cp, PDO::PARAM_STR);
+      $enregistrement->bindParam("adresse", $adresse, PDO::PARAM_STR);
+      $enregistrement->execute();
+  }
+
+
 }
 
 ?>
@@ -84,7 +107,9 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
 
         <div class="container">
             <div class="row mt-5">
-                <div class="col-12"></div>
+              <div class="col-12">
+                <?= $msg ?>
+              </div>
                 <div class="col-12">
                     <form method="post" action="" class="border p-3 row">
                         <div class="col-sm-6">
