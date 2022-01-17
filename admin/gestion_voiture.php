@@ -13,11 +13,11 @@ if (!user_is_admin()) {
 //************************//
 // SUPRESSION DU VEHICULE //
 //************************//
-if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id'])) {
+if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_voiture'])) {
 
     // //Récupération des données de la voitura voiture pour pouvoir supprimer sa photo.
-    $recup_nom_photo = $pdo->prepare("SELECT * FROM voiture WHERE id = :id");
-    $recup_nom_photo->bindParam(':id', $_GET['id'], PDO::PARAM_STR);
+    $recup_nom_photo = $pdo->prepare("SELECT * FROM voiture WHERE id_voiture = :id_voiture");
+    $recup_nom_photo->bindParam(':id_voiture', $_GET['id_voiture'], PDO::PARAM_STR);
     $recup_nom_photo->execute();
 
     if ($recup_nom_photo->rowCount() > 0) {
@@ -26,17 +26,17 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id
     }
 
 
-    $id= $_GET['id'];
-    $supprimer = $pdo->prepare("DELETE FROM voiture WHERE id = :id");
-    $supprimer->bindParam(':id', $id, PDO::PARAM_STR);
+    $id_voiture= $_GET['id_voiture'];
+    $supprimer = $pdo->prepare("DELETE FROM voiture WHERE id_voiture = :id_voiture");
+    $supprimer->bindParam(':id_voiture', $id_voiture, PDO::PARAM_STR);
     $supprimer->execute();
 
     if ($supprimer->rowCount() > 0) {
-        $msg .= '<div class="alert alert-success">La voiture numéro ' . $id . ' a bien été supprimé. </div>';
+        $msg .= '<div class="alert alert-success">La voiture numéro ' . $id_voiture . ' a bien été supprimé. </div>';
     }
 }
 
-$id = ''; // Champ caché du formulaire réservé à la modification
+$id_voiture = ''; // Champ caché du formulaire réservé à la modification
 $marque = '';
 $modele = '';
 $tarif24 = '';
@@ -49,14 +49,14 @@ $photo = '';
 // RECUPERATION DES DONNEES SI MODIFICATION //
 //******************************************//
 
-if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id'])) {
-    $modification = $pdo->prepare("SELECT * FROM voiture WHERE id = :id");
-    $modification->bindParam(':id', $_GET['id'], PDO::PARAM_STR);
+if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_voiture'])) {
+    $modification = $pdo->prepare("SELECT * FROM voiture WHERE id_voiture = :id_voiture");
+    $modification->bindParam(':id_voiture', $_GET['id_voiture'], PDO::PARAM_STR);
     $modification->execute();
 
     if ($modification->rowCount() > 0) {
         $infos = $modification->fetch(PDO::FETCH_ASSOC);
-        $id = $infos['id'];
+        $id_voiture = $infos['id_voiture'];
         $marque= $infos['marque'];
         $modele = $infos['modele'];
         $tarif24 = $infos['tarif24'];
@@ -81,8 +81,8 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
     $caution = trim($_POST['caution']);
 
     // Récupération de l'id si modification
-    if (!empty($_POST['id'])) {
-        $id = trim($_POST['id']);
+    if (!empty($_POST['id_voiture'])) {
+        $id_voiture = trim($_POST['id_voiture']);
     }
 
     $erreur = false;
@@ -166,13 +166,13 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
 
     if ($erreur == false) {
 
-        if (empty($id)) {
+        if (empty($id_voiture)) {
 
             $enregistrement = $pdo->prepare("INSERT INTO voiture (marque, modele, tarif24, tarif48, tarifSemaine, caution, photo) VALUES (:marque, :modele, :tarif24, :tarif48, :tarifSemaine, :caution, :photo)");
             $enregistrement->bindParam(':photo', $photo, PDO::PARAM_STR);
         } else {
-            $enregistrement = $pdo->prepare("UPDATE voiture SET marque = :marque, modele = :modele, tarif24 = :tarif24, tarif48 = :tarif48, tarifSemaine = :tarifSemaine, caution = :caution WHERE id = :id");
-            $enregistrement->bindParam(':id', $id, PDO::PARAM_STR);
+            $enregistrement = $pdo->prepare("UPDATE voiture SET marque = :marque, modele = :modele, tarif24 = :tarif24, tarif48 = :tarif48, tarifSemaine = :tarifSemaine, caution = :caution WHERE id_voiture = :id_voiture");
+            $enregistrement->bindParam(':id_voiture', $id_voiture, PDO::PARAM_STR);
         }
         $enregistrement->bindParam(':marque', $marque, PDO::PARAM_STR);
         $enregistrement->bindParam(':modele', $modele, PDO::PARAM_STR);
@@ -208,7 +208,7 @@ include "../inc/header.inc.php";
             <div class="col-12">
                 <form action="" method="POST" class="border rounded p-3 row" enctype="multipart/form-data">
 
-                <input type="hidden" name="id" value="<?= $id ?>">
+                <input type="hidden" name="id" value="<?= $id_voiture ?>">
 
                 <div class="col-sm-6">
                     <div class="mb-3">
@@ -277,7 +277,7 @@ include "../inc/header.inc.php";
         <?php
         while ($voiture = $voitures->fetch(PDO::FETCH_ASSOC)) {
             echo '<tr>';
-            echo '<td>' . $voiture['id'] . '</td>';
+            echo '<td>' . $voiture['id_voiture'] . '</td>';
             echo '<td>' . $voiture['marque'] . '</td>';
             echo '<td>' . $voiture['modele'] . '</td>';
             echo '<td>' . $voiture['tarif24'] . '</td>';
@@ -285,9 +285,9 @@ include "../inc/header.inc.php";
             echo '<td>' . $voiture['tarifSemaine'] . '</td>';
             echo '<td>' . $voiture['caution'] . '</td>';
             echo '<td><img src="'. URL .'img/' . $voiture['photo'] . '" width="100"></td>';
-            echo '<td><a href="?action=modifier&id=' . $voiture['id'] . '" class="btn btn-warning">editer</a></td>';
+            echo '<td><a href="?action=modifier&id=' . $voiture['id_voiture'] . '" class="btn btn-warning">editer</a></td>';
             // AJOUTER UNE VALIDATION SUR LA SUPRESSION
-            echo '<td><a href="?action=supprimer&id=' . $voiture['id'] . '" class="btn btn-danger">suprimer</a></td>';
+            echo '<td><a href="?action=supprimer&id=' . $voiture['id_voiture'] . '" class="btn btn-danger">suprimer</a></td>';
             echo '</tr>';
         }
         ?>

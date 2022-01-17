@@ -2,30 +2,44 @@
 include "inc/init.inc.php";
 include "inc/function.inc.php";
 
+//***************************//
+// Récupération des voitures //
+//***************************//
+$voitures = $pdo->query("SELECT * FROM voiture ORDER BY marque, modele");
 
-// COPIE COLLE LE CONTENU DU FICHIER ENTRE GUILLEMET ET L'INTEGRE A LA PAGE
 include_once "inc/header.inc.php";
 ?>
 
 <div class="card-group">
+<?php
+  while ($voiture = $voitures->fetch(PDO::FETCH_ASSOC)) {
+?>
   <div class="card">
-    <img src="img/mercedes-gla.jpg" class="card-img-top" alt="...">
+    <img src="img/<?= $voiture['photo'] ?>" class="card-img-top" alt="...">
     <div class="card-body">
-      <h5 class="card-title">Mercedes GLA AMG </h5>
-      <p class="card-text">Mercedes GLA AMG
+      <h5 class="card-title"><?= $voiture['marque'] ?> GLA AMG </h5>
+      <p class="card-text"> <?= $voiture['modele'] ?>
       <br>
-        Tarif 850€ 24h.
+        Tarif <?= $voiture['tarif24'] ?>€ 24h.
         <br>
-        120€ 48h.
+        <?= $voiture['tarif48'] ?>€ 48h.
         <br>
-        2500€ la semaine.
+        <?= $voiture['tarifSemaine'] ?>€ la semaine.
         <br>
-        Caution 5000€.
+        Caution <?= $voiture['caution'] ?>€.
       </p>
-      <a href="reservation.php" class="btn btn-primary">Reserver</a>
+      <a href="reservation.php?id_voiture=<?= $voiture['id_voiture'] ?>" class="btn btn-primary">Reserver</a>
     </div>
   </div>
-  <div class="card">
+
+  <?php
+    }
+  ?>
+
+
+
+
+                    <div class="card">
     <img src="img/mercedes-gla.jpg" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">Mercedes GLA </h5>

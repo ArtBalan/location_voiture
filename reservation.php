@@ -3,10 +3,59 @@
 include "inc/init.inc.php";
 include "inc/function.inc.php";
 
+
+if(isset($_GET['id_voiture'])){
+    $requete = $pdo->prepare("SELECT * FROM voiture WHERE id_voiture = :id_voiture");
+    $requete->bindParam(':id_voiture', $_GET['id_voiture'], PDO::PARAM_STR);
+    $requete->execute();
+} else {
+    header('location:' . URL . 'voiture.php');
+    exit();
+}
 include_once "inc/header.inc.php";
 ?>
 
-<h1>Fiche de revervation</h1>
+<?php
+if ($requete->rowCount() > 0){
+    $infos = $requete->fetch(PDO::FETCH_ASSOC);
+} else {
+    $msg .= '<div class="alert alert-danger mb-3 ">⚠ Le véhicule en question n\'a pas été trouvé.</div>';
+}
+?>
+
+    <main class="container-fluid ">
+    <div class="bg-light p-5 text-center">
+        <h1><i class="fas fa-tshirt"></i> <?= $infos['marque']; ?> <i class="fas fa-tshirt"></i></h1>
+    </div>
+    <div class="container">
+        <div class="row mt-5">
+            <!-- Affichage des messages utilisateurs -->
+            <div class="col-12"><?= $msg; ?></div>
+            <div class="col-md-6">
+
+                <ul class="list-group ">
+                    <li class="list-group-item bg-indigo rounded mb-3">Détails du véhicule </li>
+                    <li class="list-group-item rounded mb-3 "><b>Marque : </b><?= $infos['marque']; ?></li>
+                    <li class="list-group-item rounded mb-3 "><b>Modèle : </b><?= $infos['modele']; ?></li>
+                    <li class="list-group-item rounded mb-3 "><b>Tarif 24 heures : </b><?= $infos['tarif24']; ?></li>
+                    <li class="list-group-item rounded mb-3 "><b>Tarif 48 heures : </b><?= $infos['tarif48']; ?></li>
+                    <li class="list-group-item rounded mb-3 "><b>Tarif hébdomadaire : </b><?= $infos['tarifSemaine']; ?></li>
+                    <li class="list-group-item rounded mb-3 "><b>Caution : </b><?= $infos['caution']; ?></li>
+                </ul>
+
+            </div>
+            <div class="col-md-6">
+                <img src="<?= URL . 'img/'. $infos['photo']; ?>" alt="">
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+    <h1>Fiche de revervation</h1>
         
         <form action="" method="post">
             <div class="c100">
