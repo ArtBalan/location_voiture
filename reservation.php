@@ -4,22 +4,71 @@ include "inc/init.inc.php";
 include "inc/function.inc.php";
 
 
+//*********************************//
+// Recupération donnée du véhicule //
+//*********************************//
 if(isset($_GET['id_voiture'])){
-    $requete = $pdo->prepare("SELECT * FROM voiture WHERE id_voiture = :id_voiture");
-    $requete->bindParam(':id_voiture', $_GET['id_voiture'], PDO::PARAM_STR);
-    $requete->execute();
+    $requeteInfoVoiture = $pdo->prepare("SELECT * FROM voiture WHERE id_voiture = :id_voiture");
+    $requeteInfoVoiture->bindParam(':id_voiture', $_GET['id_voiture'], PDO::PARAM_STR);
+    $requeteInfoVoiture->execute();
 } else {
     header('location:' . URL . 'voiture.php');
     exit();
 }
+
+//******************//
+//
+//******************//
+
+if(isset($_POST['id_voiture']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['permis'])){
+
+    $requeteInfoReservations = $pdo->prepare("SELECT * FROM reservation WHERE id_voiture = :id_voiture");
+    $requeteInfoReservations->bindParam(':id_voiture', $_POST['id_voiture'], PDO::PARAM_STR);
+    $requeteInfoReservations->execute();
+    $error = false;
+
+    $reserver = false;
+    while (($reservation = $requeteInfoReservations->fetch(PDO::FETCH_ASSOC)) && !$reserver) {
+        if(date_overlap($reservation['date_debut'],$reservation['date_fin'],$_POST['date_debut'],$_POST['date_fin'])){
+            $reserver = true;
+            $error = true;
+        }
+    }
+
+   if(user_is_connected()){
+       if(!$error){
+           $id_membre = $_SESSION['membre']['id_membre'];
+           $date_debut = $_POST['date_debut'];
+           $date_fin = $_POST['date_fin'];
+           $id_voiture = $_POST['id_voiture'];
+           $permis = $_POST['permis'];
+
+           $enregistrementReservation = $pdo->prepare("INSERT INTO reservation (id_voiture, id_membre, date_debut, date_fin, permis) VALUES(:id_voiture, :id_membre, :date_debut, :date_fin, :permis)");
+           $enregistrementReservation->bindParam(":id_voiture", $id_voiture, PDO::PARAM_STR);
+           $enregistrementReservation->bindParam(":id_membre", $id_membre, PDO::PARAM_STR);
+           $enregistrementReservation->bindParam(":date_debut", $date_debut, PDO::PARAM_STR);
+           $enregistrementReservation->bindParam(":date_fin", $date_fin, PDO::PARAM_STR);
+           $enregistrementReservation->bindParam(":permis", $permis, PDO::PARAM_STR);
+           $enregistrementReservation->execute();
+       }
+   } else {
+       $msg .= "veuillez vous connecté pour réserver";
+   }
+
+   if($reserver){
+       $msg .= "le vehicule est déjà réservé sur ce crénaux";
+   }
+}
 include_once "inc/header.inc.php";
 ?>
-
+<?= $msg ?>
 <?php
-if ($requete->rowCount() > 0){
-    $infos = $requete->fetch(PDO::FETCH_ASSOC);
+if ($requeteInfoVoiture->rowCount() > 0){
+    $infos = $requeteInfoVoiture->fetch(PDO::FETCH_ASSOC);
+    $id_voiture = $infos['id_voiture'];
 } else {
-    $msg .= '<div class="alert alert-danger mb-3 ">⚠ Le véhicule en question n\'a pas été trouvé.</div>';
+    header('location:' . URL . 'voiture.php');
+    exit();
 }
 ?>
 
@@ -29,8 +78,6 @@ if ($requete->rowCount() > 0){
     </div>
     <div class="container">
         <div class="row mt-5">
-            <!-- Affichage des messages utilisateurs -->
-            <div class="col-12"><?= $msg; ?></div>
             <div class="col-md-6">
 
                 <ul class="list-group ">
@@ -49,70 +96,33 @@ if ($requete->rowCount() > 0){
             </div>
         </div>
     </div>
-</main>
-
-
-
-
 
     <h1>Fiche de revervation</h1>
         
-        <form action="" method="post">
-            <div class="c100">
-                <label for="Nom">Nom: </label>
-                <input type="text" id="Nom" name="Nom">
-            </div>
+    <form action="" method="post">
+        <input type="hidden" name="id_voiture" value="<?= $id_voiture ?>">
+        <div class="c100">
+            <label for="permis">Numero de permis: </label>
+            <input  id="permis" name="permis">
+        </div>
 
-            <div class="c100">
-                <label for="Prenom">Prenom</label>
-                <input type="text" id="Prenom" name="Prenom">
-            </div>
+        <div class="c100">
+            <label for="date_debut">Date de début de réservation : </label>
+            <input type="date" name="date_debut">
+        </div>
 
-            <div class="c100">
-                <label for="ville">Ville : </label>
-                <input type="ville" id="vile" name="ville">
-                 </div>
+        <div class="c100">
+            <label for="date_fin">Date de fin de réservation : </label>
+            <input type="date" name="date_fin">
+        </div>
 
+        <div class="c100" id="submit">
+            <input type="submit" value="Reservation">
+        </div>
+    </form>
 
-            
-             <div class="c100">
-            <label for="code_postal">code_postal:</label>
-            <input type="text" id="code_postal" name="code_postal">
-            </div>
+</main>
 
-            
-            <div class="c100">
-                <label for="Permis">Numero de permis: </label>
-                <input  id="Permis" name="Permis">
-            </div>
-
-            <div class="c100">
-                     <label for="Voiture">Voiture</label>
-                     <input type="Voiture" name="Voiture">
-                     </div>
-
-                     <div class="c100">
-                         <label for="Date">Date</label>
-                         <input type="Date" name="Date">
-                        </div>
-
-                 <div class="c100" id="submit">
-                <input type="submit" value="Reservation">
-            </div>
-
-
-
-            
-
-                 
-
-
-            
-
-            
-                
-        </form>
-
-        <?php
-           include_once "inc/footer.inc.php";
-        ?>
+<?php
+    include_once "inc/footer.inc.php";
+?>

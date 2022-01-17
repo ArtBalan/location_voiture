@@ -16,3 +16,8 @@ function user_is_admin(){
         return false; // oui il est connecter et son statut N'EST PAS egal à 2 en BDD c'est donc un membre
     }
 }
+
+// Retourne true si les deux intervalles de dates se supérpose
+function date_overlap($startA, $endA, $startB, $endB){
+    return ($startA <= $endB) && ($endA >= $startB);
+}
