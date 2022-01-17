@@ -64,9 +64,8 @@ include 'inc/header.inc.php';
 // echo '<pre>'; echo print_r($_SESSION); echo '</pre>';
 
 ?>
-<!--style="background-color: rgb(33, 120, 63); width: 100%
+<style="background-color: rgb(33, 120, 63); width: 100%">
 
-style="background-color: rgb(33, 120, 63); width: 100%"-->
 
 <main class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
     <div class="p-3 text-center bg-dark w-100">
@@ -103,3 +102,4 @@ style="background-color: rgb(33, 120, 63); width: 100%"-->
 
 <?php
 include 'inc/footer.inc.php';
+?>

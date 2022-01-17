@@ -21,19 +21,42 @@
           <a class="nav-link active" aria-current="page" href="index.php">Menu</a>
         </li>
      <li>
-        <a class="nav-link" href="voiture.php">Voiture</a>
+        <a class="nav-link" href="<?= URL ?>voiture.php">Voiture</a>
      </li>
 
      <li class="nav-item">
      <?php
+
+
+     //=============================================//
+     // Menu admin                                  //
+     //=============================================//
+
+     if(user_is_admin()){
+         echo '<a class="nav-link" href="' . URL . 'admin/gestion_voiture.php">Gestion Voiture</a>';
+         echo '</li>';
+
+
+
+         echo '<li class="nav-item">';
+     }
+
+
+
+
+
+     //=============================================//
+     // menu de connexion, deconnexion, inscription //
+     //=============================================//
+
      if(user_is_connected()){
-        echo '<a class="nav-link" href="connexion.php?action=deconnexion">Deconnexion</a>';
+        echo '<a class="nav-link" href="'. URL . 'connexion.php?action=deconnexion">Deconnexion</a>';
      } else {
          echo '
-            <a class="nav-link" href="inscription.php">Inscription</a>
+            <a class="nav-link" href="' . URL . 'inscription.php">Inscription</a>
         </li>
         <li class="nav-item">
-             <a class="nav-link " href="connexion.php">Connexion</a>
+             <a class="nav-link " href="' . URL . 'connexion.php">Connexion</a>
          ';
      }
      ?>
