@@ -13,7 +13,7 @@ if (!user_is_admin()) {
 //************************//
 // SUPRESSION DU VEHICULE //
 //************************//
-if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_voiture'])) {
+if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id'])) {
 
     // //Récupération des données de la voitura voiture pour pouvoir supprimer sa photo.
     $recup_nom_photo = $pdo->prepare("SELECT * FROM voiture WHERE id = :id");
@@ -50,20 +50,19 @@ $photo = '';
 //******************************************//
 
 if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id'])) {
-    $modification = $pdo->prepare("SELECT * FROM voiture WHERE id= :id");
+    $modification = $pdo->prepare("SELECT * FROM voiture WHERE id = :id");
     $modification->bindParam(':id', $_GET['id'], PDO::PARAM_STR);
     $modification->execute();
 
     if ($modification->rowCount() > 0) {
         $infos = $modification->fetch(PDO::FETCH_ASSOC);
-
         $id = $infos['id'];
-        $reference = $infos['marque'];
-        $categorie = $infos['modele'];
-        $titre = $infos['tarif24'];
-        $description = $infos['tarif48'];
-        $couleur = $infos['tarifSemaine'];
-        $taille = $infos['caution'];
+        $marque= $infos['marque'];
+        $modele = $infos['modele'];
+        $tarif24 = $infos['tarif24'];
+        $tarif48 = $infos['tarif48'];
+        $tarifSemaine = $infos['tarifSemaine'];
+        $caution = $infos['caution'];
         $photo = $infos['photo'];
     }
 }
@@ -161,13 +160,6 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
         } // Si extension ok
     } // Si une image est chargé
 
-
-
-
-
-
-
-
     //*************************************//
     // Enregistrement de la voiture en bdd //
     //*************************************//
@@ -194,6 +186,7 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
         header('location: gestion_voiture.php?oui='.$chemin_enregistrement_image);
     }
 }
+
 //***************************//
 // Récupération des voitures //
 //***************************//
@@ -290,10 +283,11 @@ include "../inc/header.inc.php";
             echo '<td>' . $voiture['tarif24'] . '</td>';
             echo '<td>' . $voiture['tarif48'] . '</td>';
             echo '<td>' . $voiture['tarifSemaine'] . '</td>';
+            echo '<td>' . $voiture['caution'] . '</td>';
             echo '<td><img src="'. URL .'img/' . $voiture['photo'] . '" width="100"></td>';
-            echo '<td><a href="?action=modifier&id=' . $voiture['id'] . '" class="btn btn-warning"><i class="fas fa-pen"></i></a></td>';
-            echo '<td><a href="?action=supprimer&id=' . $voiture['id'] . '" class="btn btn-danger confirm_click"  ><i class="fas fa-trash-alt"></i></a></td>';
-            // onclick="return(confirm(\'Etes-vous sur de vouloir supprimer cette voiture ?\'))" Pour mettre l'evenement confirm au click avec un attribut html
+            echo '<td><a href="?action=modifier&id=' . $voiture['id'] . '" class="btn btn-warning">editer</a></td>';
+            // AJOUTER UNE VALIDATION SUR LA SUPRESSION
+            echo '<td><a href="?action=supprimer&id=' . $voiture['id'] . '" class="btn btn-danger">suprimer</a></td>';
             echo '</tr>';
         }
         ?>
@@ -309,7 +303,5 @@ include "../inc/header.inc.php";
 
 
 
-
 <?php
-
     include "../inc/footer.inc.php";
