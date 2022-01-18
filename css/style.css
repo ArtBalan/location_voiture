@@ -38,4 +38,11 @@ input[type="submit"]:hover{
      margin: auto 0px;
      background-size: cover;
      margin: 40px;
-  }
+}
+
+img .profil{
+    max-width: 100%;
+    height: auto;
+    max-height: 80%;
+    margin:0 auto;
+}
