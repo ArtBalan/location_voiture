@@ -23,6 +23,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id
     }
 }
 
+$date_courrante = date("Y-m-d");
+
 $id_reservation = ''; // Champ caché du formulaire réservé à la modification
 $id_membre = '';
 $vehicule = '';
@@ -66,8 +68,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 //***********************//
 // Enregistrement en BDD //
 //***********************//
-if (isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['vehicule']) && isset($_POST['permis']) && isset($_POST['info']) && isset($_POST['tarif'])) {
+if (isset($_POST['id_membre']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['vehicule']) && isset($_POST['permis']) && isset($_POST['info']) && isset($_POST['tarif'])) {
 
+    $id_membre = $_POST['id_membre'];
     $nom = trim($_POST['nom']);
     $prenom = trim($_POST['prenom']);
     $telephone = trim($_POST['telephone']);
@@ -83,17 +86,41 @@ if (isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']
         $id_reservation = trim($_POST['id_reservation']);
     }
 
-    //*************************************//
+    // VERIF DES DATES
+    if(!validateDate($date_debut,'Y-m-d')){
+        $error = true;
+        $msg .= "erreur au niveau de la date de début, veuillez verifié votre entré";
+    }
+    if(!validateDate($date_fin,'Y-m-d')){
+        $error = true;
+        $msg .= "erreur au niveau de la date de fin, veuillez verifié votre entré";
+    }
+    // RECUPERATION DES RESERVATIONS LIE AU VEHICULE
+    $requeteInfoReservations = $pdo->prepare("SELECT * FROM reservation WHERE vehicule = :vehicule");
+    $requeteInfoReservations->bindParam(':vehicule', $vehicule, PDO::PARAM_STR);
+    $requeteInfoReservations->execute();
+    $error = false;
+    // VERIFICATION DE LA DISPO DU CRENAU
+    $reserver = false;
+    while (($reservation = $requeteInfoReservations->fetch(PDO::FETCH_ASSOC)) && !$reserver && !$error) {
+        if(date_overlap($reservation['date_debut'],$reservation['date_fin'],$date_debut,$date_fin)){
+            $reserver = true;
+            $erreur = true;
+            $msg .= "Le vehicuel en question est déjà réservé sur ces creneaux";
+        }
+    }
+    //**********************************//
     // Enregistrement de la resa en bdd //
-    //*************************************//
-    if ($erreur == false) {
+    //**********************************//
+    if (!$erreur) {
         if (empty($id_reservation)) {
-            $enregistrement = $pdo->prepare("INSERT INTO reservation (id_reservation, nom, prenom, telephone, date_debut, date_fin, vehicule, permis, info, tarif) VALUES (NULL, :nom, :prenom, :telephone, :date_debut, :date_fin, :vehicule, :permis, :info, :tarif)");
+            $enregistrement = $pdo->prepare("INSERT INTO reservation (id_reservation, id_membre, nom, prenom, telephone, date_debut, date_fin, vehicule, permis, info, tarif) VALUES (NULL, :id_membre, :nom, :prenom, :telephone, :date_debut, :date_fin, :vehicule, :permis, :info, :tarif)");
         } else {
-            $enregistrement = $pdo->prepare("UPDATE reservation SET nom = :nom, prenom = :prenom, telephone = :telephone, date_debut = :date_debut, date_fin = :date_fin, vehicule = :vehicule, permis = :permis, info = :info, tarif = :tarif  WHERE id_reservation = :id_reservation");
+            $enregistrement = $pdo->prepare("UPDATE reservation SET id_membre = :id_membre, nom = :nom, prenom = :prenom, telephone = :telephone, date_debut = :date_debut, date_fin = :date_fin, vehicule = :vehicule, permis = :permis, info = :info, tarif = :tarif  WHERE id_reservation = :id_reservation");
             $enregistrement->bindParam(':id_reservation', $id_reservation, PDO::PARAM_STR);
         }
 
+        $enregistrement->bindParam(':id_membre', $id_membre, PDO::PARAM_STR);
         $enregistrement->bindParam(':nom', $nom, PDO::PARAM_STR);
         $enregistrement->bindParam(':prenom', $prenom, PDO::PARAM_STR);
         $enregistrement->bindParam(':telephone', $telephone, PDO::PARAM_STR);
@@ -109,6 +136,7 @@ if (isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']
         // header('location: gestion_reservation.php?msg=' . $enregistrement->errorInfo()[2]);
     }
 }
+
 
 //*******************************//
 // Récupération des reservations //
@@ -135,9 +163,14 @@ include "../inc/header.inc.php";
             <div class="col-12">
                 <form method="post" action="" class="p-3 row">
                     <div class="col-sm-6">
-                        <div class="mb-3">
                             <input type="hidden" name="id_reservation" value="<?= $id_reservation ?>">
 
+                        <div class="mb-3">
+                            <label for="id_membre"><i class="fas fa-user"></i> ID membre : </label>
+                            <input type="text" name="id_membre" id="id_membre" class="form-control" value="<?php echo $id_membre; ?>">
+                        </div>
+
+                        <div class="mb-3">
                             <label for="nom"><i class="fas fa-user"></i> Nom</label>
                             <input type="text" name="nom" id="nom" class="form-control" value="<?php echo $nom; ?>">
                         </div>
@@ -229,7 +262,16 @@ include "../inc/header.inc.php";
                 <tbody>
                     <?php
                     while ($reservation = $resa->fetch(PDO::FETCH_ASSOC)) {
-                        echo '<tr>';
+
+                       if($date_courrante > $reservation['date_fin']){
+                           $class = "bg-danger";
+                       } elseif ($date_courrante<$reservation['date_debut']){
+                           $class = "bg-warning";
+                       } else {
+                           $class = "";
+                       }
+
+                        echo '<tr class="'. $class .'";>';
                         echo '<td>' . $reservation['id_reservation'] . '</td>';
                         echo '<td>' . $reservation['id_membre'] . '</td>';
                         echo '<td>' . $reservation['nom'] . '</td>';
@@ -252,9 +294,6 @@ include "../inc/header.inc.php";
             </table>
         </div>
     </div>
-
-
-
 </main>
 
 
