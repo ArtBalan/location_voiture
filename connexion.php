@@ -8,9 +8,9 @@ if(isset($_GET['action']) && $_GET['action'] == 'deconnexion'){
 }
 
 // restriction d'accès : si l'user est connecté, on le redirige vers profil.php
-// if(user_is_connected()){
-//     header('location: profil.php');
-// }
+if(user_is_connected()){
+	header('location: profil.php');
+}
 
 if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
 
