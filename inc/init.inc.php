@@ -29,7 +29,7 @@ define('ROOT_PATH', $_SERVER['DOCUMENT_ROOT']);
 //ARTHUR
 define('URL', 'http://localhost/devweb/location_voiture-master/');
 //KEVIN
-// ???
+// define('URL', 'http://localhost/PHP/location_voiture-master/');
 
 //Constante pour l'enregistrement des images sur la page gestion_voiture.php
 // A CHANGER AVEC VOS CHEMIN
@@ -38,4 +38,4 @@ define('URL', 'http://localhost/devweb/location_voiture-master/');
 // ARTHUR
 define('IMG_DIRECTORY', '/devweb/location_voiture-master/img/');
 // KEVIN
-// ??
+// define('IMG_DIRECTORY', '/PHP/location_voiture-master/img/');

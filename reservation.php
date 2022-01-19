@@ -31,7 +31,7 @@ if(isset($_GET['id'])){
 //****************************//
 // ENREGISTREMENT RESA EN BDD //
 //****************************//
-if(isset($_POST['vehicule']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['permis']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone'])){
+if(isset($_POST['vehicule']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['permis']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['info'])){
 
     //**********************************************//
     // RECUPERATION DES RESERVATION LIE AU VEHICULE //
@@ -61,13 +61,13 @@ if(isset($_POST['vehicule']) && isset($_POST['date_debut']) && isset($_POST['dat
            $vehicule= $_POST['vehicule'];
            $permis = $_POST['permis'];
            $nom = $_POST['nom'];
+           $nom = $_POST['nom'];
            $prenom = $_POST['prenom'];
            $telephone = $_POST['telephone'];
-
+           $info = $_POST['info'];
 
            // A FAIRE LE CALCULE DU TARIF
            $tarif = 24;
-           $info = "";
 
            $enregistrementReservation = $pdo->prepare("INSERT INTO reservation (id_membre, date_debut, date_fin, permis, nom, prenom, telephone, vehicule, info, tarif) VALUES(:id_membre, :date_debut, :date_fin, :permis, :nom, :prenom, :telephone, :vehicule, :info, :tarif)");
            $enregistrementReservation->bindParam(":vehicule", $vehicule, PDO::PARAM_STR);
@@ -118,11 +118,11 @@ include_once "inc/header.inc.php";
 
                 <ul class="list-group ">
                     <li class="list-group-item bg-indigo rounded mb-3">Détails du véhicule </li>
-                    <li class="list-group-item rounded mb-3 "><b>Marque : </b><?= $infos['marque']; ?></li>
-                    <li class="list-group-item rounded mb-3 "><b>Modèle : </b><?= $infos['modele']; ?></li>
-                    <li class="list-group-item rounded mb-3 "><b>Tarif 24 heures : </b><?= $infos['tarif24']; ?></li>
-                    <li class="list-group-item rounded mb-3 "><b>Tarif hébdomadaire : </b><?= $infos['tarifSemaine']; ?></li>
-                    <li class="list-group-item rounded mb-3 "><b>Caution : </b><?= $infos['caution']; ?></li>
+                    <li class="list-group-item rounded mb-3"><b>Marque : </b><?= $infos['marque']; ?></li>
+                    <li class="list-group-item rounded mb-3"><b>Modèle : </b><?= $infos['modele']; ?></li>
+                    <li class="list-group-item rounded mb-3" data-tarif='<?= $infos['tarif24'] ?>' id="tarif "><b>Tarif 24 heures : </b><?= $infos['tarif24']; ?></li>
+                    <li class="list-group-item rounded mb-3" data-tarifSemaine='<?= $infos['tarifSemaine'] ?>' id="tarifSemain" ><b>Tarif hébdomadaire : </b><?= $infos['tarifSemaine']; ?></li>
+                    <li class="list-group-item rounded mb-3"><b>Caution : </b><?= $infos['caution']; ?></li>
                 </ul>
 
             </div>
