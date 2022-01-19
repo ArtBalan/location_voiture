@@ -8,7 +8,6 @@ if (!user_is_admin()) {
     exit(); // Permet de bloquer l'execution de la suite du code de la page.
 }
 
-
 //******************************//
 // SUPRESSION DE LA RESERVATION //
 //******************************//
@@ -41,7 +40,6 @@ $erreur = false ;
 //******************************************//
 // RECUPERATION DES DONNEES SI MODIFICATION //
 //******************************************//
-
 if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_reservation'])) {
     $modification = $pdo->prepare("SELECT * FROM reservation WHERE id_reservation = :id_reservation");
     $modification->bindParam(':id_reservation', $_GET['id_reservation'], PDO::PARAM_STR);
@@ -68,7 +66,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 //***********************//
 // Enregistrement en BDD //
 //***********************//
-
 if (isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['vehicule']) && isset($_POST['permis']) && isset($_POST['info']) && isset($_POST['tarif'])) {
 
     $nom = trim($_POST['nom']);
@@ -89,11 +86,8 @@ if (isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']
     //*************************************//
     // Enregistrement de la resa en bdd //
     //*************************************//
-
     if ($erreur == false) {
-        
         if (empty($id_reservation)) {
-
             $enregistrement = $pdo->prepare("INSERT INTO reservation (id_reservation, nom, prenom, telephone, date_debut, date_fin, vehicule, permis, info, tarif) VALUES (NULL, :nom, :prenom, :telephone, :date_debut, :date_fin, :vehicule, :permis, :info, :tarif)");
         } else {
             $enregistrement = $pdo->prepare("UPDATE reservation SET nom = :nom, prenom = :prenom, telephone = :telephone, date_debut = :date_debut, date_fin = :date_fin, vehicule = :vehicule, permis = :permis, info = :info, tarif = :tarif  WHERE id_reservation = :id_reservation");
@@ -116,14 +110,18 @@ if (isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']
     }
 }
 
+//*******************************//
+// Récupération des reservations //
+//*******************************//
+$resa = $pdo->query("SELECT * FROM reservation ORDER BY nom, prenom");
+
+
 //***************************//
 // Récupération des voitures //
 //***************************//
-$resa = $pdo->query("SELECT * FROM reservation ORDER BY nom, prenom");
+$voitures = $pdo->query("SELECT * FROM voiture ORDER BY marque");
 
 include "../inc/header.inc.php";
-// echo '<pre>'; echo print_r($_POST); echo '</pre>'; // affichage array pour verif
-
 ?>
 
 <h1 class="text-center">Gestion réservation</h1>
@@ -172,7 +170,19 @@ include "../inc/header.inc.php";
                         </div>
                         <div class="mb-3">
                             <label for="vehicule"><i class="fas fa-car"></i> Véhicule</label>
-                            <input type="text" name="vehicule" id="vehicule" class="form-control" value="<?php echo $vehicule; ?>">
+                            <select name="vehicule" id="vehicule">
+                                <?php
+                                    // TABLE CONTENANT LA MARQUE ET MODEL DE CHAQUE VOITURE
+                                    $listeVoiture = [];
+                                    while($voiture = $voitures->fetch(PDO::FETCH_ASSOC)){
+                                        $listeVoiture[$voiture['id']] = $voiture['marque'] . ' - ' . $voiture['modele'];
+                                ?>
+                                    <option value="<?= $voiture['id'] ?>"> <?= $voiture['marque'] ?> - <?= $voiture['modele']?>
+                                <?php
+                                    }
+                                ?>
+
+                            </select>
                         </div>
 
                         <div class="mb-3">
@@ -228,7 +238,7 @@ include "../inc/header.inc.php";
                         echo '<td>' . $reservation['permis'] . '</td>';
                         echo '<td>' . $reservation['date_debut'] . '</td>';
                         echo '<td>' . $reservation['date_fin'] . '</td>';
-                        echo '<td>' . $reservation['vehicule'] . '</td>';
+                        echo '<td>' . $listeVoiture[$reservation['vehicule']]. '</td>';
                         echo '<td>' . $reservation['info'] . '</td>';
                         echo '<td>' . $reservation['tarif'] . '</td>';
 

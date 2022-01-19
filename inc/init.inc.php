@@ -37,5 +37,5 @@ define('URL', 'http://localhost/devweb/location_voiture-master/');
 // define('IMG_DIRECTORY', '/location_voiture-master/img/');
 // ARTHUR
 define('IMG_DIRECTORY', '/devweb/location_voiture-master/img/');
-// KEVIN
+//KEVIN
 // define('IMG_DIRECTORY', '/PHP/location_voiture-master/img/');

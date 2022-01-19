@@ -125,7 +125,6 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
         $tab_extension_valide = ['png', 'gif', 'jpg', 'jpeg', 'webp'];
 
         // Pour vérifier l'extension, nous allons découper le nom du fichier en partant de la fin, on remonte au permier point trouvé,  et on récupère tout depuis ce point : strrchr()
-
         $extension = strtolower(substr(strrchr($_FILES['image']['name'], '.'), 1));
         // exemple : pour le fichier truc.png on récupère .png
         //Ensuite on enleve le point dans la chaine de caractère recupéré pour avoir png avec substr
@@ -153,7 +152,6 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
     //*************************************//
     // Enregistrement de la voiture en bdd //
     //*************************************//
-
     if ($erreur == false) {
 
         if (empty($id)) {
@@ -172,7 +170,7 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
         $enregistrement->execute();
 
         //On redirige sur la même page afin de ne plus avoir la mémoire du formulaire si on recharge la page
-        header('location: gestion_voiture.php?oui='.$enregistrement->errorInfo()[1]);
+        header('location: gestion_voiture.php?oui='.$image);
     }
 }
 
