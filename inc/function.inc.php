@@ -21,3 +21,11 @@ function user_is_admin(){
 function date_overlap($startA, $endA, $startB, $endB){
     return ($startA <= $endB) && ($endA >= $startB);
 }
+
+// Verifi la validité d'une date
+// commentaire sur la page https://www.php.net/manual/fr/function.checkdate.php pour son utilisation
+function validateDate($date, $format = 'Y-m-d H:i:s')
+{
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) == $date;
+}

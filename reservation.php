@@ -28,44 +28,89 @@ if(isset($_GET['id'])){
     exit();
 }
 
+$permis = '';
+$nom = '';
+$prenom = '';
+$info = '';
+$telephone = '';
+// Récuperation de la date d'aujourd'hui
+$date_courrante = date("Y-m-d");
+$date_debut = $date_courrante;
+$date_fin = $date_courrante;
+
+
 //****************************//
 // ENREGISTREMENT RESA EN BDD //
 //****************************//
 if(isset($_POST['vehicule']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['permis']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['info'])){
 
-    //**********************************************//
-    // RECUPERATION DES RESERVATION LIE AU VEHICULE //
-    //**********************************************//
+    $id_membre = $_SESSION['membre']['id_membre'];
+    $date_debut = $_POST['date_debut'];
+    $date_fin = $_POST['date_fin'];
+    $vehicule= $_POST['vehicule'];
+    $permis = $_POST['permis'];
+    $nom = $_POST['nom'];
+    $nom = $_POST['nom'];
+    $prenom = $_POST['prenom'];
+    $telephone = $_POST['telephone'];
+    $info = $_POST['info'];
+
+
+    //*********************************//
+    // VERIFICATION DU RESTE DES INPUT //
+    //*********************************//
+
+    // VERIF DES DATES
+    if(!validateDate($date_debut,'Y-m-d')){
+        $error = true;
+        $msg .= "erreur au niveau de la date de début, veuillez verifié votre entré";
+    }
+    if(!validateDate($date_fin,'Y-m-d')){
+        $error = true;
+        $msg .= "erreur au niveau de la date de fin, veuillez verifié votre entré";
+    }
+    // RECUPERATION DES RESERVATIONS LIE AU VEHICULE
     $requeteInfoReservations = $pdo->prepare("SELECT * FROM reservation WHERE vehicule = :vehicule");
-    $requeteInfoReservations->bindParam(':vehicule', $_POST['vehicule'], PDO::PARAM_STR);
+    $requeteInfoReservations->bindParam(':vehicule', $vehicule, PDO::PARAM_STR);
     $requeteInfoReservations->execute();
     $error = false;
-
-
-    //************************************//
-    // VERIFICATION DE LA DISPO DU CRENAU //
-    //************************************//
+    // VERIFICATION DE LA DISPO DU CRENAU
     $reserver = false;
-    while (($reservation = $requeteInfoReservations->fetch(PDO::FETCH_ASSOC)) && !$reserver) {
-        if(date_overlap($reservation['date_debut'],$reservation['date_fin'],$_POST['date_debut'],$_POST['date_fin'])){
+    while (($reservation = $requeteInfoReservations->fetch(PDO::FETCH_ASSOC)) && !$reserver && !$error) {
+        if(date_overlap($reservation['date_debut'],$reservation['date_fin'],$date_debut,$date_fin)){
             $reserver = true;
             $error = true;
         }
     }
 
+    // VERIFICATION DE L EXISTANCE DU VEHICULE
+    $requeteInfoVoiture = $pdo->prepare("SELECT * FROM voiture WHERE id = :id");
+    $requeteInfoVoiture->bindParam(':id', $vehicule, PDO::PARAM_STR);
+    $requeteInfoVoiture->execute();
+    if($requeteInfoVoiture->rowCount()<1){
+        $error = true;
+    }
+
+    // VERIFICATION NOM
+    if(strlen($nom) < 3 || strlen($nom)>50){
+        $error = true;
+        $msg .= "Le nom doit faire entre 3 et 50 caractères";
+    }
+
+    // VERIFICATION PRENOM
+    if(strlen($prenom) < 3 || strlen($prenom)>50){
+        $error = true;
+        $msg .= "Le prenom doit faire entre 3 et 50 caractères";
+    }
+
+    // VERIFICATION DU TELEPHONE
+    if(!is_numeric($telephone)){
+        $error = true;
+        $msg .= "Le numéro de téléphone doit être numérique";
+    }
+
    if(user_is_connected()){
        if(!$error){
-           $id_membre = $_SESSION['membre']['id_membre'];
-           $date_debut = $_POST['date_debut'];
-           $date_fin = $_POST['date_fin'];
-           $vehicule= $_POST['vehicule'];
-           $permis = $_POST['permis'];
-           $nom = $_POST['nom'];
-           $nom = $_POST['nom'];
-           $prenom = $_POST['prenom'];
-           $telephone = $_POST['telephone'];
-           $info = $_POST['info'];
-
            // A FAIRE LE CALCULE DU TARIF
            $tarif = 24;
 
@@ -81,9 +126,6 @@ if(isset($_POST['vehicule']) && isset($_POST['date_debut']) && isset($_POST['dat
            $enregistrementReservation->bindParam(":tarif", $tarif, PDO::PARAM_STR);
            $enregistrementReservation->bindParam(":info", $info, PDO::PARAM_STR);
            $enregistrementReservation->execute();
-
-           $msg .= $enregistrementReservation->errorInfo()[2];
-
        }
    } else {
        $msg .= "veuillez vous connecté pour réserver";
@@ -96,8 +138,6 @@ if(isset($_POST['vehicule']) && isset($_POST['date_debut']) && isset($_POST['dat
 //**************************//
 // Récupération réservation //
 //**************************//
-// Récuperation de la date d'aujourd'hui
-$date_courrante = date("Y-m-d");
 //on requpère les date de début de de fin des reservations à venir. Ainsi que data_debut et data_fin qui serviron a être injecter dans les elements de la liste sour forme de data-atribute en html
 $requeteReservations = $pdo->prepare("SELECT DATE_FORMAT(date_debut, '%d/%m/%Y') AS date_debut, DATE_FORMAT(date_fin, '%d/%m/%Y') as date_fin, DATE_FORMAT(date_debut, '%Y%m%d') as data_debut, DATE_FORMAT(date_fin, '%Y%m%d') as data_fin FROM reservation WHERE :vehicule = vehicule AND date_fin > :date_courrante");
 $requeteReservations->bindParam(":vehicule", $_GET['id'], PDO::PARAM_STR);
@@ -139,30 +179,34 @@ include_once "inc/header.inc.php";
                 <input type="hidden" name="vehicule" value="<?= $id ?>">
                 <div class="c100">
                     <label for="permis">Numero de permis: </label>
-                    <input  id="permis" name="permis">
+                    <input  id="permis" name="permis" value="<?= $permis ?>">
                 </div>
                 <div class="c100">
                     <label for="nom">Nom : </label>
-                    <input  id="nom" name="nom">
+                    <input  id="nom" name="nom" value="<?= $nom ?>">
                 </div>
                 <div class="c100">
                     <label for="prenom">Prenom : </label>
-                    <input  id="prenom" name="prenom">
+                    <input  id="prenom" name="prenom" value="<?= $prenom ?>">
                 </div>
                 <div class="c100">
                     <label for="telephone">Telephone : </label>
-                    <input  id="telephone" name="telephone">
+                    <input  id="telephone" name="telephone" value="<?= $telephone ?>">
                 </div>
                 <div class="c100">
                     <label for="date_debut">Date de début de réservation : </label>
-                    <input type="date" name="date_debut" id="date_debut">
+                    <input type="date" name="date_debut" id="date_debut" value="<?= $date_debut ?>">
                 </div>
                 <div class="c100">
                     <label for="date_fin">Date de fin de réservation : </label>
-                    <input type="date" name="date_fin" id="date_fin">
+                    <input type="date" name="date_fin" id="date_fin" value="<?= $date_fin ?>">
+                </div>
+                <div class="c100">
+                    <label for="info">Informations complémentaires : </label>
+                    <textarea name="info" id="info"><?= $info ?></textarea>
                 </div>
                 <div class="c100" id="submit">
-                    <input type="submit" value="Reservation" id="btn_reservation">
+                    <input type="submit" value="Reserver" id="btn_reservation">
                 </div>
             </form>
         </div>

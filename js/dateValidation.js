@@ -49,19 +49,26 @@ function update(){
   let overlap = false;
   let i = 0;
   let length = creneauList.length;
-
   while(!overlap && i<length){
       overlap = date_overlap(currentCreneau, creneauList[i]);
       i++;
     }
-  console.log(overlap);
+
+  // Si déjà reservé
   if(overlap){
-      btnReservation.classList.add('btn-blocked');
-      btnReservation.disabled = true;
-    } else {
-      btnReservation.classList.remove('btn-blocked');
-      btnReservation.disabled = false;
-}
+    btnReservation.disabled = true;
+    btnReservation.value = "Le vehicule est déjà réserver sur ces dates"
+  } else {
+    btnReservation.disabled = false;
+    btnReservation.value = "Reserver"
+  }
+
+  // VERIFICATION DE SI LA DATE DE DEBUT EST SUPERIEUR A LA DATE DE FIN
+  if(currentCreneau.debut > currentCreneau.fin){
+    btnReservation.disabled = true;
+    btnReservation.value = "Les deux dates ne sont pas dans le bonne ordre"
+  }
+
 }
 
 function date_overlap(dateA,dateB){
