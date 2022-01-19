@@ -1,0 +1,69 @@
+
+//*******************//
+// Objet creneau //
+//*******************//
+class Creneau {
+  constructor(debut, fin){
+    this.debut = debut;
+    this.fin = fin;
+  }
+}
+
+//**********************//
+// Déclaration des vars //
+//**********************//
+// on récupère les éléments ayant la classe dateItem
+let listItem = document.getElementsByClassName('dateItem');
+//on récupère les deux inputs de type date
+let debutInput = document.getElementById("date_debut");
+let finInput = document.getElementById("date_fin");
+let btnReservation = document.getElementById('btn_reservation');
+// On créer un tableau qui va contenir les crénaux de réservation
+let creneauList = [];
+
+//**************************//
+// Récupération des données //
+//**************************//
+
+// Pour chaque élémént ayant la classe dateItem
+for(var i=0; i < listItem.length; i++ ){
+  // On récupère les dates stocker dans les éléments html (generer par le php)
+  let dateDebut = listItem[i].dataset.debut;
+  let dateFin = listItem[i].dataset.fin;
+  // On créer un objet Crenau, ayant les date et on l'ajoute a la liste
+  creneauList.push(new Creneau(dateDebut,dateFin));
+}
+
+// Dés que un des inputs changent on appel la fonction update
+debutInput.addEventListener('change', e => update());
+finInput.addEventListener('change', e => update());
+
+// Lorsque un des inputs changent
+function update(){
+  // recupération du créneau entré par l'utilisateur
+  dateDebut = parseInt(debutInput.value.replaceAll('-',''));
+  dateFin = parseInt(finInput.value.replaceAll('-',''));
+  let currentCreneau = new Creneau(dateDebut,dateFin);
+
+  // verification de la validité du créneau
+  let overlap = false;
+  let i = 0;
+  let length = creneauList.length;
+
+  while(!overlap && i<length){
+      overlap = date_overlap(currentCreneau, creneauList[i]);
+      i++;
+    }
+  console.log(overlap);
+  if(overlap){
+      btnReservation.classList.add('btn-blocked');
+      btnReservation.disabled = true;
+    } else {
+      btnReservation.classList.remove('btn-blocked');
+      btnReservation.disabled = false;
+}
+}
+
+function date_overlap(dateA,dateB){
+    return (dateA.debut <= dateB.fin) && (dateA.fin >= dateB.debut);
+}
