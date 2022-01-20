@@ -1,10 +1,12 @@
 <?php
-include 'inc/init.inc.php';
-include 'inc/function.inc.php';
+include 'inc/00_init.inc.php';
+include 'inc/01_function.inc.php';
 
 // Déconnexion utilisateur
 if(isset($_GET['action']) && $_GET['action'] == 'deconnexion'){
     session_destroy(); // on deruit la session : l'utilisateur ne sera plus connécter
+    header('location: index.php');
+    exit();
 }
 
 // restriction d'accès : si l'user est connecté, on le redirige vers profil.php
@@ -47,7 +49,7 @@ if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
 
             // l'utilisateur est connecter, on le redirige vers la page profile
             // cette fonction header() doit etre executée AVANT LE MOINDRE AFFICHAGE dans la page
-            header('location:voiture.php'); // fonction très importante qui permet d'envoyer les differents user dans une page (ici de la page "connexion" à la page "acceuil")
+            header('location:index.php'); // fonction très importante qui permet d'envoyer les differents user dans une page (ici de la page "connexion" à la page "acceuil")
 
         } else {
             $msg .= '<div class="alert alert-danger mb-2">⚠, Le pseudo ou le mot de passe sont incorrect<br> Veuillez vérifier les champs ci-dessous</div>';
@@ -59,13 +61,12 @@ if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
 
 
 // debut des affichage sur la ligne en dessous
-include 'inc/header.inc.php';
+include 'inc/02_head.inc.php';
+include 'inc/03_nav.inc.php';
 
 // echo '<pre>'; echo print_r($_SESSION); echo '</pre>';
 
 ?>
-<style="background-color: rgb(33, 120, 63); width: 100%">
-
 
 <main class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
     <div class="p-3 text-center bg-dark w-100">
@@ -101,5 +102,5 @@ include 'inc/header.inc.php';
 </main>
 
 <?php
-include 'inc/footer.inc.php';
+include 'inc/06_footer2.inc.php';
 ?>

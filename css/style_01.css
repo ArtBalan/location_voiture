@@ -29,10 +29,6 @@ input[type="submit"]:hover{
   box-shadow: 0px 0px 5px 0px #777;
 }
 
-.btn-blocked{
-  background-color: red;
-}
-
 .menu{
   height: 500px;
      text-align: center;

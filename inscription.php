@@ -1,9 +1,8 @@
 <?php
+include "inc/00_init.inc.php";
+include "inc/01_function.inc.php";
 
-include "inc/init.inc.php";
-include "inc/function.inc.php";
-
-include_once "inc/header.inc.php";
+include_once "inc/02_head.inc.php";
 
 $pseudo = '';
 $mdp = '';
@@ -110,6 +109,9 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
   }
 }
 
+// debut des affichages
+include 'inc/03_nav.inc.php';
+include 'inc/04_header.inc.php';
 ?>
     <main class="container-fluid">
         <div class="bg-light p-5 text-center">
@@ -175,5 +177,5 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
             </div>
         </div>
 <?php
-  include_once "inc/footer.inc.php";
+  include_once "inc/05_footer.inc.php";
 ?>

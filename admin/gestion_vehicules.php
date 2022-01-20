@@ -1,6 +1,10 @@
 <?php
-include "../inc/init.inc.php";
-include "../inc/function.inc.php";
+include "../inc/00_init.inc.php";
+include "../inc/01_function.inc.php";
+
+
+
+
 
 
 // Redirige si l'utilisateur n'est pas admin
@@ -125,6 +129,7 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
         $tab_extension_valide = ['png', 'gif', 'jpg', 'jpeg', 'webp'];
 
         // Pour vérifier l'extension, nous allons découper le nom du fichier en partant de la fin, on remonte au permier point trouvé,  et on récupère tout depuis ce point : strrchr()
+
         $extension = strtolower(substr(strrchr($_FILES['image']['name'], '.'), 1));
         // exemple : pour le fichier truc.png on récupère .png
         //Ensuite on enleve le point dans la chaine de caractère recupéré pour avoir png avec substr
@@ -152,6 +157,7 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
     //*************************************//
     // Enregistrement de la voiture en bdd //
     //*************************************//
+
     if ($erreur == false) {
 
         if (empty($id)) {
@@ -170,7 +176,7 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
         $enregistrement->execute();
 
         //On redirige sur la même page afin de ne plus avoir la mémoire du formulaire si on recharge la page
-        header('location: gestion_voiture.php?oui='.$image);
+        header('location: gestion_vehicules.php');
     }
 }
 
@@ -178,9 +184,19 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
 // Récupération des voitures //
 //***************************//
 $voitures = $pdo->query("SELECT * FROM voiture ORDER BY marque, modele");
+include "../inc/02_head.inc.php";
+include "../inc/03_nav.inc.php";
 
-include "../inc/header.inc.php";
+
+
+
+
 ?>
+
+
+
+
+
 
 
 <h1> Gestion voiture</h1>
@@ -265,7 +281,7 @@ include "../inc/header.inc.php";
             echo '<td>' . $voiture['tarif24'] . '</td>';
             echo '<td>' . $voiture['tarifSemaine'] . '</td>';
             echo '<td>' . $voiture['caution'] . '</td>';
-            echo '<td><img src="'. URL .'img/' . $voiture['image'] . '" width="100"></td>';
+            echo '<td><img src="'. URL .'assets/img/voiture/' . $voiture['image'] . '" width="100"></td>';
             echo '<td><a href="?action=modifier&id=' . $voiture['id'] . '" class="btn btn-warning">editer</a></td>';
             // AJOUTER UNE VALIDATION SUR LA SUPRESSION
             echo '<td><a href="?action=supprimer&id=' . $voiture['id'] . '" class="btn btn-danger">suprimer</a></td>';
@@ -277,12 +293,3 @@ include "../inc/header.inc.php";
 </div>
 </div>
 </main>
-
-
-
-
-
-
-
-<?php
-    include "../inc/footer.inc.php";

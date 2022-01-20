@@ -1,6 +1,6 @@
 <?php
-include "../inc/init.inc.php";
-include "../inc/function.inc.php";
+include '../inc/00_init.inc.php';
+include '../inc/01_function.inc.php';
 
 // Redirige si l'utilisateur n'est pas admin
 if (!user_is_admin()) {
@@ -27,6 +27,7 @@ $date_courrante = date("Y-m-d");
 
 $id_reservation = ''; // Champ caché du formulaire réservé à la modification
 $id_membre = '';
+$id_voiture = '';
 $vehicule = '';
 $nom = '';
 $prenom = '';
@@ -52,6 +53,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 
         $id_reservation = $infos['id_reservation'];
         $id_membre = $infos['id_membre'];
+        $id_voiture = $infos['id_voiture'];
         $vehicule = $infos['vehicule'];
         $nom = $infos['nom'];
         $prenom = $infos['prenom'];
@@ -68,9 +70,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 //***********************//
 // Enregistrement en BDD //
 //***********************//
-if (isset($_POST['id_membre']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['vehicule']) && isset($_POST['permis']) && isset($_POST['info']) && isset($_POST['tarif'])) {
+if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['vehicule']) && isset($_POST['permis']) && isset($_POST['info']) && isset($_POST['tarif'])) {
 
     $id_membre = $_POST['id_membre'];
+    $id_voiture = $_POST['id_voiture'];
     $nom = trim($_POST['nom']);
     $prenom = trim($_POST['prenom']);
     $telephone = trim($_POST['telephone']);
@@ -80,10 +83,12 @@ if (isset($_POST['id_membre']) && isset($_POST['nom']) && isset($_POST['prenom']
     $permis = trim($_POST['permis']);
     $info = trim($_POST['info']);
     $tarif = trim($_POST['tarif']);
-
+    $requeteBonus = "";
     // Récupération de l'id si modification
     if (!empty($_POST['id_reservation'])) {
         $id_reservation = trim($_POST['id_reservation']);
+        // Pour la validation des date on ne veut pas verifier si les dates overlaps elles meme
+        $requeteBonus = "AND id_reservation != :id_reservation";
     }
 
     // VERIF DES DATES
@@ -96,7 +101,10 @@ if (isset($_POST['id_membre']) && isset($_POST['nom']) && isset($_POST['prenom']
         $msg .= "erreur au niveau de la date de fin, veuillez verifié votre entré";
     }
     // RECUPERATION DES RESERVATIONS LIE AU VEHICULE
-    $requeteInfoReservations = $pdo->prepare("SELECT * FROM reservation WHERE vehicule = :vehicule");
+    $requeteInfoReservations = $pdo->prepare("SELECT * FROM reservation WHERE vehicule = :vehicule".$requeteBonus);
+    if (!empty($_POST['id_reservation'])) {
+        $requeteInfoReservations->bindParam(':id_reservation', $id_reservation, PDO::PARAM_STR);
+    }
     $requeteInfoReservations->bindParam(':vehicule', $vehicule, PDO::PARAM_STR);
     $requeteInfoReservations->execute();
     $error = false;
@@ -106,7 +114,7 @@ if (isset($_POST['id_membre']) && isset($_POST['nom']) && isset($_POST['prenom']
         if(date_overlap($reservation['date_debut'],$reservation['date_fin'],$date_debut,$date_fin)){
             $reserver = true;
             $erreur = true;
-            $msg .= "Le vehicuel en question est déjà réservé sur ces creneaux";
+            $msg .= "Le vehicule en question est déjà réservé sur ces creneaux";
         }
     }
     //**********************************//
@@ -114,13 +122,14 @@ if (isset($_POST['id_membre']) && isset($_POST['nom']) && isset($_POST['prenom']
     //**********************************//
     if (!$erreur) {
         if (empty($id_reservation)) {
-            $enregistrement = $pdo->prepare("INSERT INTO reservation (id_reservation, id_membre, nom, prenom, telephone, date_debut, date_fin, vehicule, permis, info, tarif) VALUES (NULL, :id_membre, :nom, :prenom, :telephone, :date_debut, :date_fin, :vehicule, :permis, :info, :tarif)");
+            $enregistrement = $pdo->prepare("INSERT INTO reservation (id_reservation,id_voiture, id_membre, nom, prenom, telephone, date_debut, date_fin, vehicule, permis, info, tarif) VALUES (NULL, :id_voiture, :id_membre, :nom, :prenom, :telephone, :date_debut, :date_fin, :vehicule, :permis, :info, :tarif)");
         } else {
-            $enregistrement = $pdo->prepare("UPDATE reservation SET id_membre = :id_membre, nom = :nom, prenom = :prenom, telephone = :telephone, date_debut = :date_debut, date_fin = :date_fin, vehicule = :vehicule, permis = :permis, info = :info, tarif = :tarif  WHERE id_reservation = :id_reservation");
+            $enregistrement = $pdo->prepare("UPDATE reservation SET id_membre = :id_membre, id_voiture = :id_voiture, nom = :nom, prenom = :prenom, telephone = :telephone, date_debut = :date_debut, date_fin = :date_fin, vehicule = :vehicule, permis = :permis, info = :info, tarif = :tarif  WHERE id_reservation = :id_reservation");
             $enregistrement->bindParam(':id_reservation', $id_reservation, PDO::PARAM_STR);
         }
 
         $enregistrement->bindParam(':id_membre', $id_membre, PDO::PARAM_STR);
+        $enregistrement->bindParam(':id_voiture', $id_voiture, PDO::PARAM_STR);
         $enregistrement->bindParam(':nom', $nom, PDO::PARAM_STR);
         $enregistrement->bindParam(':prenom', $prenom, PDO::PARAM_STR);
         $enregistrement->bindParam(':telephone', $telephone, PDO::PARAM_STR);
@@ -149,13 +158,12 @@ $resa = $pdo->query("SELECT * FROM reservation ORDER BY nom, prenom");
 //***************************//
 $voitures = $pdo->query("SELECT * FROM voiture ORDER BY marque");
 
-include "../inc/header.inc.php";
+// debut des affichages
+include '../inc/02_head.inc.php';
+include '../inc/03_nav.inc.php';
 ?>
 
-<h1 class="text-center">Gestion réservation</h1>
-
-<main class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
-
+<main id="main">
     <div class="container">
         <div class="row mt-3">
             <div class="col-12"><?php echo $msg; ?></div>
@@ -163,8 +171,8 @@ include "../inc/header.inc.php";
             <div class="col-12">
                 <form method="post" action="" class="p-3 row">
                     <div class="col-sm-6">
-                            <input type="hidden" name="id_reservation" value="<?= $id_reservation ?>">
-
+                        <input type="hidden" name="id_reservation" value="<?= $id_reservation ?>">
+                        <input type="hidden" name="vehicule" value="<?= $vehicule ?>">
                         <div class="mb-3">
                             <label for="id_membre"><i class="fas fa-user"></i> ID membre : </label>
                             <input type="text" name="id_membre" id="id_membre" class="form-control" value="<?php echo $id_membre; ?>">
@@ -202,8 +210,8 @@ include "../inc/header.inc.php";
                             <input type="date" name="date_fin" id="date_fin" class="form-control" value="<?php echo $date_fin; ?>">
                         </div>
                         <div class="mb-3">
-                            <label for="vehicule"><i class="fas fa-car"></i> Véhicule</label>
-                            <select name="vehicule" id="vehicule">
+                            <label for="id_voiture"><i class="fas fa-car"></i> Véhicule</label>
+                            <select name="id_voiture" id="id_voiture">
                                 <?php
                                     // TABLE CONTENANT LA MARQUE ET MODEL DE CHAQUE VOITURE
                                     $listeVoiture = [];
@@ -217,17 +225,14 @@ include "../inc/header.inc.php";
 
                             </select>
                         </div>
-
                         <div class="mb-3">
                             <label for="info"><i class="fas fa-file-alt"></i> Info</label>
                             <input type="text" name="info" id="info" class="form-control" value="<?php echo $info; ?>">
                         </div>
-
                         <div class="mb-3">
                             <label for="tarif"><i class="fas fa-money-bill-alt"></i> Tarif</label>
                             <input type="text" name="tarif" id="tarif" class="form-control" value="<?php echo $tarif; ?>">
                         </div>
-
                         <div class="mb-3">
                             <button type="submit" id="enregistrement" class="btn btn-outline-dark w-100 rounded-pill"> Enregistrer<i class="fas fa-sign-in-alt"></i></button>
                         </div>
@@ -280,7 +285,7 @@ include "../inc/header.inc.php";
                         echo '<td>' . $reservation['permis'] . '</td>';
                         echo '<td>' . $reservation['date_debut'] . '</td>';
                         echo '<td>' . $reservation['date_fin'] . '</td>';
-                        echo '<td>' . $listeVoiture[$reservation['vehicule']]. '</td>';
+                        echo '<td>' . $reservation['vehicule']. '</td>';
                         echo '<td>' . $reservation['info'] . '</td>';
                         echo '<td>' . $reservation['tarif'] . '</td>';
 
@@ -297,5 +302,14 @@ include "../inc/header.inc.php";
 </main>
 
 
+
+</main>
+
+
+
+
+
+
+
 <?php
-include "../inc/footer.inc.php";
+//include '../inc/06_footer2.inc.php';
