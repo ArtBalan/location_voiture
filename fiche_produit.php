@@ -18,12 +18,12 @@ if(isset($_GET['id'])){
         $id = $info_vehicule['id'];
     } else {
         // SI VOITURE NON TROUVER EN BDD
-        header('location:' . URL . 'voiture.php');
+        header('location:' . URL . 'index.php#vehicule');
         exit();
     }
 } else {
     // SI PAS ID DANS URL
-    header('location:' . URL . 'voiture.php');
+    header('location:' . URL . 'index.php#vehicule');
     exit();
 }
 
@@ -148,7 +148,6 @@ $requeteReservations->execute();
 
 // debut des affichages
 include 'inc/03_nav.inc.php';
-
 ?>
 
   <main id="main">

@@ -158,9 +158,7 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
     //*************************************//
 
     if ($erreur == false) {
-
         if (empty($id)) {
-
             $enregistrement = $pdo->prepare("INSERT INTO voiture (marque, modele, tarif24, tarifSemaine, caution, image) VALUES (:marque, :modele, :tarif24, :tarifSemaine, :caution, :image)");
             $enregistrement->bindParam(':image', $image, PDO::PARAM_STR);
         } else {
