@@ -3,10 +3,18 @@ include 'inc/00_init.inc.php';
 include 'inc/01_function.inc.php';
 include 'inc/02_head.inc.php';
 
+
+$voiture = '';
+$mercedes= '';
+$audi = '';
+$porsche = '';
+
 //***************************//
 // Récupération des voitures //
 //***************************//
 $voitures = $pdo->query("SELECT * FROM voiture ORDER BY marque, modele");
+
+$marques = $pdo->query("SELECT DISTINCT marque FROM voiture ORDER BY marque");
 
 // debut des affichages
 include 'inc/03_nav.inc.php';
@@ -22,11 +30,10 @@ include 'inc/04_header.inc.php';
         <div class="row">
         <h2 class="text-center">Pourquoi nous ?</h2>
 
-
           <div class="col-lg-4" data-aos="fade-up">
             <div class="box">
               <span>Rapidité</span>
-              <h4>Lorem Ipsum>/h4>
+              <h4>Lorem Ipsum</h4>
               <p>Ulamco laboris nisi ut aliquip ex ea commodo consequat. Et consectetur ducimus vero placeat</p>
             </div>
           </div>
@@ -103,7 +110,7 @@ include 'inc/04_header.inc.php';
         <div class="row">
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="fade-up">
             <div class="icon-box">
-              <div class="icon"><i class="bx bxl-dribbble"></i></div>
+              <div class="icon"><i class="bi bi-calendar-date"></i></div>
               <h4><a href="">Location à la journée</a></h4>
               <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
             </div>
@@ -111,7 +118,7 @@ include 'inc/04_header.inc.php';
 
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="fade-up" data-aos-delay="150">
             <div class="icon-box">
-              <div class="icon"><i class="bx bx-file"></i></div>
+              <div class="icon"><i class="bi bi-calendar-range"></i></div>
               <h4><a href="">Location à la semaine</a></h4>
               <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
             </div>
@@ -119,8 +126,8 @@ include 'inc/04_header.inc.php';
 
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="300">
             <div class="icon-box">
-              <div class="icon"><i class="bx bx-tachometer"></i></div>
-              <h4><a href="">Service voiturier partenaire</a></h4>
+              <div class="icon"><i class="bi bi-calendar-day"></i></div>
+              <h4><a href=""></a>Location au mois</h4>
               <!-- on pourrait imaginer que chez certains commerçant (luxe) restau ect le service voiturier soit partenaire de la boite et prend en charge le véhicule dès l\'arriver de nos clients en loc -->
               <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p>
             </div>
@@ -129,15 +136,15 @@ include 'inc/04_header.inc.php';
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4" data-aos="fade-up" data-aos-delay="450">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-world"></i></div>
-              <h4><a href="">Nemo Enim</a></h4>
+              <h4><a href="">Partout dans le monde</a></h4>
               <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4" data-aos="fade-up" data-aos-delay="600">
             <div class="icon-box">
-              <div class="icon"><i class="bx bx-slideshow"></i></div>
-              <h4><a href="">Dele cardo</a></h4>
+              <div class="icon"><i class="bx bx-car"></i></div>
+              <h4><a href="">Service voiturier n'importe où chez l'un de nos partenaire</a></h4>
               <p>Quis consequatur saepe eligendi voluptatem consequatur dolor consequuntur</p>
             </div>
           </div>
@@ -145,7 +152,7 @@ include 'inc/04_header.inc.php';
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4" data-aos="fade-up" data-aos-delay="750">
             <div class="icon-box">
               <div class="icon"><i class="bx bx-arch"></i></div>
-              <h4><a href="">Divera don</a></h4>
+              <h4><a href="">Des partenaires de grand nom</a></h4>
               <p>Modi nostrum vel laborum. Porro fugit error sit minus sapiente sit aspernatur</p>
             </div>
           </div>
@@ -169,25 +176,28 @@ include 'inc/04_header.inc.php';
           <div class="col-lg-12 d-flex justify-content-center">
             <ul id="portfolio-flters">
               <li data-filter="*" class="filter-active">Toutes</li>
-              <li data-filter=".filter-app">Mercedes</li> <!-- app -->
-              <li data-filter=".filter-card">Audi</li> <!-- card -->
-              <li data-filter=".filter-web">Porsche</li> <!-- web -->
+              <?php
+              while ($marque = $marques->fetch(PDO::FETCH_ASSOC)){
+                ?>
+              <li data-filter=".<?= $marque['marque'] ?>"><?= $marque['marque'] ?></li>
+              <?php
+              }
+              ?>
             </ul>
           </div>
         </div>
 
         <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="150">
-
         <?php
           while ($voiture = $voitures->fetch(PDO::FETCH_ASSOC)) {
         ?>
-          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-           <a href="fiche_produit.php?id=<?= $voiture['id'] ?>"><img src="assets/img/voiture/<?= $voiture['image'] ?>" class="img-fluid" alt=""></a> 
+          <div class="col-lg-4 col-md-6 portfolio-item <?= $voiture['marque'] ?>">
+           <a href="fiche_produit.php?id=<?= $voiture['id'] ?>"><img src="assets/img/voiture/<?= $voiture['image'] ?>" class="img-fluid" alt=""></a>
             <div class="portfolio-info">
               <h4><?= $voiture['marque'] ?></h4>
               <p><?= $voiture['modele'] ?></p>
-              <a href="assets/img/voiture/mercedes_cls.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Mercedes CLS 6.3 AMG"><i class="far fa-eye"></i></a>
-              <a href="portfolio-details.html" class="details-link" title="More Details"><i class="far fa-arrow-alt-circle-right"></i></a>
+              <a href="assets/img/voiture/<?= $voiture['image'] ?>" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="<?= $voiture['marque'] . ' ' . $voiture['modele'] ?>"><i class="far fa-eye"></i></a>
+              <a href="fiche_produit.php?id=<?= $voiture['id'] ?>" class="details-link" title="Pus de détails"><i class="far fa-arrow-alt-circle-right"></i></a>
             </div>
           </div>
 
@@ -195,7 +205,6 @@ include 'inc/04_header.inc.php';
           }
           ?>
         </div>
-
       </div>
     </section><!-- End Portfolio Section -->
 
@@ -210,10 +219,9 @@ include 'inc/04_header.inc.php';
         </div>
 
         <div class="row">
-
           <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="150">
             <div class="box">
-              <h3>Jour</h3>
+              <h3>Tarif à la journée</h3>
               <h4>600<sup>€</sup><span> / jours</span></h4>
               <ul>
                 <li>Aida dere</li>
@@ -230,8 +238,8 @@ include 'inc/04_header.inc.php';
 
           <div class="col-lg-4 col-md-6 mt-4 mt-md-0" data-aos="zoom-in">
             <div class="box featured">
-              <h3>Week-End</h3>
-              <h4>1700<sup>€</sup><span> / Week-End</span></h4>
+              <h3>Tarif à la semaine</h3>
+              <h4>3 800<sup>€</sup><span> / Semaine</span></h4>
               <ul>
                 <li>Aida dere</li>
                 <li>Nec feugiat nisl</li>
@@ -247,8 +255,8 @@ include 'inc/04_header.inc.php';
 
           <div class="col-lg-4 col-md-6 mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="150">
             <div class="box">
-              <h3>Semaine</h3>
-              <h4>3 800<sup>€</sup><span> / semaine</span></h4>
+              <h3>Tarif du Week-End</h3>
+              <h4>1 700<sup>€</sup><span> / Week-end</span></h4>
               <ul>
                 <li>Aida dere</li>
                 <li>Nec feugiat nisl</li>

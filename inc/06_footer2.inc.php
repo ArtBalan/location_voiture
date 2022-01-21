@@ -25,11 +25,11 @@
           <div class="col-lg-2 col-md-6 footer-links">
             <h4>Lien utiles</h4>
             <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Accueil</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="index.php">Accueil</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">A porpos de nous</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Les véhicules</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Tarif</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="<?php if($currentPage != "index") echo URL . "index.php" ?>#services">Services</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="<?php if($currentPage != "index") echo URL . "index.php" ?>#vehicule">Les véhicules</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="<?php if($currentPage != "index") echo URL . "index.php" ?>#tarif">Tarif</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">Mentiion légale</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">Mention de confidentialitée</a></li>
             </ul>
