@@ -12,8 +12,7 @@ if (!user_is_admin()) {
 // SUPRESSION DE LA RESERVATION //
 //******************************//
 if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_reservation'])) {
-
-    // $id_reservation = $_GET['id_reservation'];
+    $id_reservation = $_GET['id_reservation'];
     $supprimer = $pdo->prepare("DELETE FROM reservation WHERE id_reservation = :id_reservation");
     $supprimer->bindParam(':id_reservation', $_GET['id_reservation'], PDO::PARAM_STR);
     $supprimer->execute();
@@ -60,7 +59,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
         $telephone = $infos['telephone'];
         $date_debut = $infos['date_debut'];
         $date_fin = $infos['date_fin'];
-        $vehicule = $infos['vehicule'];
         $permis = $infos['permis'];
         $info = $infos['info'];
         $tarif = $infos['tarif'];
@@ -70,7 +68,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 //***********************//
 // Enregistrement en BDD //
 //***********************//
-if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['vehicule']) && isset($_POST['permis']) && isset($_POST['info']) && isset($_POST['tarif'])) {
+if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['permis']) && isset($_POST['info']) && isset($_POST['tarif'])) {
 
     $id_membre = $_POST['id_membre'];
     $id_voiture = $_POST['id_voiture'];
@@ -79,7 +77,6 @@ if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['n
     $telephone = trim($_POST['telephone']);
     $date_debut = trim($_POST['date_debut']);
     $date_fin = trim($_POST['date_fin']);
-    $vehicule = trim($_POST['vehicule']);
     $permis = trim($_POST['permis']);
     $info = trim($_POST['info']);
     $tarif = trim($_POST['tarif']);
@@ -88,7 +85,18 @@ if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['n
     if (!empty($_POST['id_reservation'])) {
         $id_reservation = trim($_POST['id_reservation']);
         // Pour la validation des date on ne veut pas verifier si les dates overlaps elles meme
-        $requeteBonus = "AND id_reservation != :id_reservation";
+        $requeteBonus = " AND id_reservation != :id_reservation";
+    }
+
+    $requeteVehicule = $pdo->prepare("SELECT * FROM voiture WHERE id = :id");
+    $requeteVehicule->bindParam(':id', $id_voiture, PDO::PARAM_STR);
+    $requeteVehicule->execute();
+    if($requeteVehicule->rowCount()<1){
+        $error = true;
+        $msg .= "l'id du vehicule n'a pas été trouvé";
+    } else {
+        $voiture = $requeteVehicule->fetch(PDO::FETCH_ASSOC);
+        $vehiculestr = $voiture['marque']. ' - ' .$voiture['modele'];
     }
 
     // VERIF DES DATES
@@ -102,7 +110,7 @@ if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['n
     }
     // RECUPERATION DES RESERVATIONS LIE AU VEHICULE
     $requeteInfoReservations = $pdo->prepare("SELECT * FROM reservation WHERE vehicule = :vehicule".$requeteBonus);
-    if (!empty($_POST['id_reservation'])) {
+    if (!empty($id_reservation)) {
         $requeteInfoReservations->bindParam(':id_reservation', $id_reservation, PDO::PARAM_STR);
     }
     $requeteInfoReservations->bindParam(':vehicule', $vehicule, PDO::PARAM_STR);
@@ -135,14 +143,14 @@ if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['n
         $enregistrement->bindParam(':telephone', $telephone, PDO::PARAM_STR);
         $enregistrement->bindParam(':date_debut', $date_debut, PDO::PARAM_STR);
         $enregistrement->bindParam(':date_fin', $date_fin, PDO::PARAM_STR);
-        $enregistrement->bindParam(':vehicule', $vehicule, PDO::PARAM_STR);
+        $enregistrement->bindParam(':vehicule', $vehiculestr, PDO::PARAM_STR);
         $enregistrement->bindParam(':permis', $permis, PDO::PARAM_STR);
         $enregistrement->bindParam(':info', $info, PDO::PARAM_STR);
         $enregistrement->bindParam(':tarif', $tarif, PDO::PARAM_STR);
         $enregistrement->execute();
 
         // On redirige sur la même page afin de ne plus avoir la mémoire du formulaire si on recharge la page
-        // header('location: gestion_reservation.php?msg=' . $enregistrement->errorInfo()[2]);
+        header('location: gestion_reservation.php');
     }
 }
 

@@ -23,7 +23,7 @@ session_start();
 // KEVIN
 // ??
 // ARTHUR
-define('URL', 'http://localhost/devweb/golden_location/');
+define('URL', 'http://localhost/devweb/location_voiture-master/');
 
 
 
@@ -37,6 +37,6 @@ define('ROOT_PATH', $_SERVER['DOCUMENT_ROOT']);
 // KEVIN
 // ??
 // ATHUR
-define('IMG_DIRECTORY', '/devweb/golden_location/assets/img/voiture');
+define('IMG_DIRECTORY', '/devweb/location_voiture-master/assets/img/voiture');
 
 $currentPage = basename($_SERVER['PHP_SELF']);

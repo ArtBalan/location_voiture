@@ -28,7 +28,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id
         unlink(ROOT_PATH . IMG_DIRECTORY . $recup['image']);
     }
 
-
     $id= $_GET['id'];
     $supprimer = $pdo->prepare("DELETE FROM voiture WHERE id= :id");
     $supprimer->bindParam(':id', $id, PDO::PARAM_STR);
@@ -186,18 +185,7 @@ if (isset($_POST['marque']) && isset($_POST['modele']) && isset($_POST['tarif24'
 $voitures = $pdo->query("SELECT * FROM voiture ORDER BY marque, modele");
 include "../inc/02_head.inc.php";
 include "../inc/03_nav.inc.php";
-
-
-
-
-
 ?>
-
-
-
-
-
-
 
 <h1> Gestion voiture</h1>
 

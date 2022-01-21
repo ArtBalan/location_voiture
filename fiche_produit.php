@@ -42,7 +42,7 @@ $date_fin = $date_courrante;
 // ENREGISTREMENT RESA EN BDD //
 //****************************//
 if(isset($_POST['id_voiture']) && isset($_POST['date_debut']) && isset($_POST['date_fin']) && isset($_POST['permis']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['info'])){
-    $id_membre = $_SESSION['membre']['id_membre'];
+   if(user_is_connected()){
     $date_debut = $_POST['date_debut'];
     $date_fin = $_POST['date_fin'];
     $id_voiture = $_POST['id_voiture'];
@@ -108,11 +108,11 @@ if(isset($_POST['id_voiture']) && isset($_POST['date_debut']) && isset($_POST['d
         $msg .= "Le numéro de téléphone doit être numérique";
     }
 
-   if(user_is_connected()){
        if(!$error){
            // A FAIRE LE CALCULE DU TARIF
            $tarif = 24;
 
+           $id_membre = $_SESSION['membre']['id_membre'];
            $enregistrementReservation = $pdo->prepare("INSERT INTO reservation (id_voiture, id_membre, date_debut, date_fin, permis, nom, prenom, telephone, vehicule, info, tarif) VALUES(:id_voiture, :id_membre, :date_debut, :date_fin, :permis, :nom, :prenom, :telephone, :vehicule, :info, :tarif)");
            $enregistrementReservation->bindParam(":id_voiture", $id_voiture, PDO::PARAM_STR);
            $enregistrementReservation->bindParam(":id_membre", $id_membre, PDO::PARAM_STR);
@@ -128,12 +128,12 @@ if(isset($_POST['id_voiture']) && isset($_POST['date_debut']) && isset($_POST['d
            $enregistrementReservation->bindParam(":tarif", $tarif, PDO::PARAM_STR);
            $enregistrementReservation->execute();
        }
-   } else {
-       $msg .= "veuillez vous connecté pour réserver";
-   }
-
    if($reserver){
        $msg .= "le vehicule est déjà réservé sur ce crénaux";
+   }
+
+   } else {
+       $msg .= "veuillez vous connecté pour réserver";
    }
 }
 
