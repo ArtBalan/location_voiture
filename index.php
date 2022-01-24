@@ -1,13 +1,12 @@
 <?php
-include 'inc/00_init.inc.php';
-include 'inc/01_function.inc.php';
-include 'inc/02_head.inc.php';
+include "inc/00_init.inc.php";
+include "inc/01_function.inc.php";
+include "inc/02_head.inc.php";
 
-
-$voiture = '';
-$mercedes = '';
-$audi = '';
-$porsche = '';
+$voiture = "";
+$mercedes = "";
+$audi = "";
+$porsche = "";
 
 //***************************//
 // Récupération des voitures //
@@ -17,9 +16,8 @@ $voitures = $pdo->query("SELECT * FROM voiture ORDER BY marque, modele");
 $marques = $pdo->query("SELECT DISTINCT marque FROM voiture ORDER BY marque");
 
 // debut des affichages
-include 'inc/03_nav.inc.php';
-include 'inc/04_header.inc.php';
-
+include "inc/03_nav.inc.php";
+include "inc/04_header.inc.php";
 ?>
 <main id="main">
 
@@ -27,8 +25,13 @@ include 'inc/04_header.inc.php';
   <section id="why-us" class="why-us">
     <div class="container">
 
+      <div class="section-title">
+        <span>Pourquoi nous ?</span>
+        <h2>Pourquoi nous ?</h2>
+        <p>Un service à la hauteur de vos qualitées</p>
+      </div>
+
       <div class="row">
-        <h2 class="text-center">Pourquoi nous ?</h2>
 
         <div class="col-lg-4" data-aos="fade-up">
           <div class="box">
@@ -177,34 +180,42 @@ include 'inc/04_header.inc.php';
         <div class="col-lg-12 d-flex justify-content-center">
           <ul id="portfolio-flters">
             <li data-filter="*" class="filter-active">Toutes</li>
-            <?php
-            while ($marque = $marques->fetch(PDO::FETCH_ASSOC)) {
-            ?>
-              <li data-filter=".<?= $marque['marque'] ?>"><?= $marque['marque'] ?></li>
-            <?php
-            }
-            ?>
+            <?php while ($marque = $marques->fetch(PDO::FETCH_ASSOC)) { ?>
+              <li data-filter=".<?= $marque["marque"] ?>"><?= $marque[
+    "marque"
+] ?></li>
+            <?php } ?>
           </ul>
         </div>
       </div>
 
       <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="150">
-        <?php
-        while ($voiture = $voitures->fetch(PDO::FETCH_ASSOC)) {
-        ?>
-          <div class="col-lg-4 col-md-6 portfolio-item <?= $voiture['marque'] ?>">
-            <a href="fiche_produit.php?id=<?= $voiture['id'] ?>"><img src="assets/img/voiture/<?= $voiture['image'] ?>" class="img-fluid" alt=""></a>
+        <?php while ($voiture = $voitures->fetch(PDO::FETCH_ASSOC)) { ?>
+          <div class="col-lg-4 col-md-6 portfolio-item <?= $voiture[
+              "marque"
+          ] ?>">
+            <a href="fiche_produit.php?id=<?= $voiture[
+                "id"
+            ] ?>"><img src="assets/img/voiture/<?= $voiture[
+    "image"
+] ?>" class="img-fluid" alt=""></a>
             <div class="portfolio-info">
-              <h4><?= $voiture['marque'] ?></h4>
-              <p><?= $voiture['modele'] ?></p>
-              <a href="assets/img/voiture/<?= $voiture['image'] ?>" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="<?= $voiture['marque'] . ' ' . $voiture['modele'] ?>"><i class="far fa-eye"></i></a>
-              <a href="fiche_produit.php?id=<?= $voiture['id'] ?>" class="details-link" title="Pus de détails"><i class="far fa-arrow-alt-circle-right"></i></a>
+              <h4><?= $voiture["marque"] ?></h4>
+              <p><?= $voiture["modele"] ?></p>
+              <a href="assets/img/voiture/<?= $voiture[
+                  "image"
+              ] ?>" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="<?= $voiture[
+    "marque"
+] .
+    " " .
+    $voiture["modele"] ?>"><i class="far fa-eye"></i></a>
+              <a href="fiche_produit.php?id=<?= $voiture[
+                  "id"
+              ] ?>" class="details-link" title="Pus de détails"><i class="far fa-arrow-alt-circle-right"></i></a>
             </div>
           </div>
 
-        <?php
-        }
-        ?>
+        <?php } ?>
       </div>
     </div>
   </section><!-- End Portfolio Section -->
@@ -258,7 +269,7 @@ include 'inc/04_header.inc.php';
             <h3>Tarif du Week-End</h3>
             <h4>1 700<sup>€</sup><span> / Week-end</span></h4>
             <ul>
-            <li>Véhicule pendant le Week-End</li>
+              <li>Véhicule pendant le Week-End</li>
               <li>Essence au plein</li>
               <li>Service d'aide et d'assurance 24h/24h, 7j/7</li>
               <li>Service voiturier</li>
@@ -275,5 +286,4 @@ include 'inc/04_header.inc.php';
     </div>
   </section><!-- End Pricing Section -->
 
-  <?php
-  include 'inc/05_footer.inc.php';
+  <?php include "inc/05_footer.inc.php";

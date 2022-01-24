@@ -354,15 +354,5 @@ include '../inc/03_nav.inc.php';
     </div>
 </main>
 
-
-
-</main>
-
-
-
-
-
-
-
 <?php
 //include '../inc/06_footer2.inc.php';
