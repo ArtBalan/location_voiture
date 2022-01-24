@@ -3,9 +3,9 @@
       <div class="container">
 
         <div class="section-title">
-          <span>Contact</span>
-          <h2>Contact</h2>
-          <p>Sit sint consectetur velit quisquam cupiditate impedit suscipit alias</p>
+          <span>Contact <i class="bi bi-envelope-check"></i></span>
+          <h2>Contact <i class="bi bi-envelope-check"></i></h2>
+          <p>Une question ? Contactez nous, nous nous ferons unplaisir de vous répondre. Et dans les mailleurs délais !</p>
         </div>
 
         <div class="row" data-aos="fade-up">
@@ -100,26 +100,15 @@
           <div class="col-lg-2 col-md-6 footer-links">
             <h4>Lien utiles</h4>
             <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="index.php">Accueil</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#hero">Accueil</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">A porpos de nous</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="<?php if($currentPage != "index") echo URL . "index.php" ?>#services">Services</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="<?php if($currentPage != "index") echo URL . "index.php" ?>#vehicule">Les véhicules</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="<?php if($currentPage != "index") echo URL . "index.php" ?>#tarif">Tarif</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#services">Services</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#vehicule">Les véhicules</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#tarif">Tarif</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">Mentiion légale</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="#">Mention de confidentialitée</a></li>
             </ul>
           </div>
-
-          <!-- <div class="col-lg-2 col-md-6 footer-links">
-            <h4>Our Services</h4>
-            <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
-            </ul>
-          </div> -->
 
           <div class="col-lg-4 col-md-6 footer-newsletter">
             <h4>Ne ratez rien !</h4>
@@ -138,13 +127,6 @@
       <div class="copyright">
         &copy; Copyright <strong><span>Golden Loacation</span></strong>. All Rights Reserved
       </div>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/day-multipurpose-html-template-for-free/ -->
-        <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
-      </div>
     </div>
   </footer><!-- End Footer -->
 
@@ -157,7 +139,6 @@
   <script src="<?= URL ?>assets/vendor/glightbox/js/glightbox.min.js"></script>
   <script src="<?= URL ?>assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="<?= URL ?>assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="<?= URL ?>assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
   <script src="<?= URL ?>assets/js/main.js"></script>

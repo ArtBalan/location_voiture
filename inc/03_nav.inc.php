@@ -86,7 +86,7 @@
         ?>
 
 
-        <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+        <li><a class="nav-link scrollto" href="<?php if($currentPage != "index") echo URL . "index.php" ?>#contact">Contact</a></li>
       </ul>
       <i class="bi bi-list mobile-nav-toggle"></i>
     </nav><!-- .navbar -->

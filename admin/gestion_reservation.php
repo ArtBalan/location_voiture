@@ -88,6 +88,9 @@ if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['n
         $requeteBonus = " AND id_reservation != :id_reservation";
     }
 
+    //***********************//
+    // VALIDATION DES INPUTS //
+    //***********************//
     $requeteVehicule = $pdo->prepare("SELECT * FROM voiture WHERE id = :id");
     $requeteVehicule->bindParam(':id', $id_voiture, PDO::PARAM_STR);
     $requeteVehicule->execute();
@@ -102,12 +105,13 @@ if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['n
     // VERIF DES DATES
     if(!validateDate($date_debut,'Y-m-d')){
         $error = true;
-        $msg .= "erreur au niveau de la date de début, veuillez verifié votre entré";
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Erreur au niveau de la date de début.<br>Veuillez vérifier vos saisies.</div>';
     }
     if(!validateDate($date_fin,'Y-m-d')){
         $error = true;
-        $msg .= "erreur au niveau de la date de fin, veuillez verifié votre entré";
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Erreur au niveau de la date de fin.<br>Veuillez vérifier vos saisies.</div>';
     }
+
     // RECUPERATION DES RESERVATIONS LIE AU VEHICULE
     $requeteInfoReservations = $pdo->prepare("SELECT * FROM reservation WHERE vehicule = :vehicule".$requeteBonus);
     if (!empty($id_reservation)) {
@@ -122,9 +126,50 @@ if (isset($_POST['id_membre']) && isset($_POST['id_voiture']) && isset($_POST['n
         if(date_overlap($reservation['date_debut'],$reservation['date_fin'],$date_debut,$date_fin)){
             $reserver = true;
             $erreur = true;
-            $msg .= "Le vehicule en question est déjà réservé sur ces creneaux";
+            $msg .= '<div class="alert alert-danger mb-3">⚠ Le véhicule est déjà réservé sur ces dates.</div>';
         }
     }
+
+    // VERIFICATION ID MEMBRE
+    if(!is_numeric($id_membre)){
+        $erreur = true;
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Veuillez spécifié l\'id membre.<br>Veuillez vérifier vos saisies.</div>';
+    }
+
+    // VERIFICATION NUMERO PERMIS
+    if(!is_numeric($permis)){
+        $erreur = true;
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Le numéro de permis doit être une valeur numérique.<br>Veuillez vérifier vos saisies.</div>';
+    }
+
+    // VERIFICATION NUMERO TELEPHONE
+    if(!is_numeric($telephone)){
+        $erreur = true;
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Le numéro de téléphone doit être une valeur numérique.<br>Veuillez vérifier vos saisies.</div>';
+    }
+    // VERIFICATION tarif
+    if(!is_numeric($tarif)){
+        $erreur = true;
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Le tarif doit être une valeur numérique.<br>Veuillez vérifier vos saisies.</div>';
+    }
+    // VERIFICATION NOM
+    if(strlen($nom) < 3 || strlen($nom)>50){
+        $error = true;
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Le nom doit faire entre 3 et 50 caractères.<br>Veuillez vérifier vos saisies.</div>';
+    }
+
+    // VERIFICATION PRENOM
+    if(strlen($prenom) < 3 || strlen($prenom)>50){
+        $error = true;
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Le prenom doit faire entre 3 et 50 caractères.<br>Veuillez vérifier vos saisies.</div>';
+    }
+
+    // VERIFICATION DU TELEPHONE
+    if(!is_numeric($telephone)){
+        $error = true;
+        $msg .= '<div class="alert alert-danger mb-3">⚠ Le numéro de téléphone doit exclusivement contenir des chiffres.<br>Veuillez vérifier vos saisies.</div>';
+    }
+
     //**********************************//
     // Enregistrement de la resa en bdd //
     //**********************************//
@@ -174,9 +219,9 @@ include '../inc/03_nav.inc.php';
 <main id="main">
     <div class="container">
         <div class="row mt-3">
-            <div class="col-12"><?php echo $msg; ?></div>
 
             <div class="col-12">
+                <?= $msg; ?>
                 <form method="post" action="" class="p-3 row">
                     <div class="col-sm-6">
                         <input type="hidden" name="id_reservation" value="<?= $id_reservation ?>">
