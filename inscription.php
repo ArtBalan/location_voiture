@@ -111,15 +111,13 @@ if( isset($_POST['pseudo']) && isset($_POST['mdp']) && isset($_POST['nom']) && i
 
 // debut des affichages
 include 'inc/03_nav.inc.php';
-include 'inc/04_header.inc.php';
 ?>
     <main class="container-fluid">
-        <div class="bg-light p-5 text-center">
-            <h1><i class="fas fa-gifts text-indigo"></i> Inscription <i class="fas fa-gifts text-indigo"></i></h1>
-            <p class="lead">Bienvenue.</p>
-        </div>
-
-        <div class="container">
+      <div class="p-3 text-center bg-dark w-100">
+        <h1 class="text-white text-center"> <b>Inscription <i class="fas fa-sign-in-alt text-white"></i></b></h1>
+        <p class="lead text-white">Pas de compte ? C\'est ici l\'inscritpiton.  <i class="far fa-arrow-alt-circle-right"></i></a></p>
+      </div>
+      <div class="container">
             <div class="row mt-5">
               <div class="col-12">
                 <?= $msg ?>

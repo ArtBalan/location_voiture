@@ -71,16 +71,16 @@ include 'inc/03_nav.inc.php';
 <main class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
     <div class="p-3 text-center bg-dark w-100">
         <h1 class="text-white text-center"> <b>Connexion <i class="fas fa-sign-in-alt text-white"></i></b></h1>
-        <p class="lead text-white">Vous n'avez pas encore de compte ? <a class="text-white fs-italic" href="inscription.php">Inscivez-vous ici <i class="far fa-arrow-alt-circle-right"></i></a></p>
+        <p class="lead text-white">Vous n\'avez pas encore de compte ? <a class="text-white fs-italic" href="inscription.php">Inscivez-vous ici <i class="far fa-arrow-alt-circle-right"></i></a></p>
     </div>
 
     <div class="container">
         <div class="row mt-5">
-            <div class="col-12"><?php echo $msg; ?></div> <!-- affichage des msg utilisateur -->
             <div class="col-12">
 
                 <form method="post" action="" class="p-0">
-                    <div class="col-sm-4 mx-auto">
+                        <div class="col-sm-4 mx-auto">
+                        <?= $msg; ?>
                         <div class="mb-3">
                             <label for="pseudo">Pseudo <i class="fas fa-user"></i></label>
                             <input type="text" name="pseudo" id="pseudo" class="form-control" placeholder="Votre pseudo" value="">
